@@ -1,9 +1,11 @@
 # Sistema de Control y POS para Billar
 
 ## 1. Contexto del Proyecto
+
 Aplicación de escritorio **100% offline** para la administración operativa de un salón de billar. Está diseñada para ejecutarse en una sola computadora local (Windows), sin dependencia de internet y **sin sistema de login ni gestión de usuarios** (operada directamente por el dueño).
 
 ### Funcionalidades Principales
+
 1. **Control de Mesas:** Iniciar tiempo en mesas libres, visualizar cronómetros en vivo, cargar consumos (bebidas/snacks) a una mesa activa mediante un modal de búsqueda, y finalizar/cobrar mostrando el desglose de tiempo + consumos (Efectivo o QR).
 2. **Ventas Directas (Barra):** Pantalla independiente para registrar ventas rápidas de productos a clientes que no ocupan mesa.
 3. **Productos y Categorías:** Gestión de catálogo, precios de venta y control de stock en tiempo real (con borrado lógico).
@@ -11,6 +13,7 @@ Aplicación de escritorio **100% offline** para la administración operativa de 
 5. **Ajustes:** Configuración del nombre del local, cantidad de mesas activas, tarifa por hora (en Bolivianos `Bs.`) y regla opcional de cobro mínimo.
 
 ### Alcance Excluido (NO implementar)
+
 - No hay inicio de sesión, roles ni tabla de usuarios.
 - No hay diferenciación por tipo de mesa/juego (Pool vs. Carambola).
 - No hay funcionalidad de pausar o transferir mesas.
@@ -18,6 +21,7 @@ Aplicación de escritorio **100% offline** para la administración operativa de 
 ---
 
 ## 2. Stack Tecnológico
+
 - **Framework Desktop:** Electron (`electron-vite`)
 - **Frontend:** React + Vite (**JavaScript puro `.js`/`.jsx`**, NO TypeScript)
 - **Base de Datos Local:** SQLite con `better-sqlite3` (archivo `.db` persistido en `app.getPath('userData')`)
@@ -30,6 +34,7 @@ Aplicación de escritorio **100% offline** para la administración operativa de 
 ---
 
 ## 3. Arquitectura de Carpetas
+
 Respetar estrictamente la separación de procesos de Electron:
 
 ```text

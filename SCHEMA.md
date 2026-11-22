@@ -3,6 +3,7 @@
 Motor: **SQLite** mediante `better-sqlite3`.  
 Ubicación del archivo en producción: `path.join(app.getPath('userData'), 'billar.db')`.  
 Directivas obligatorias al abrir conexión:
+
 ```sql
 PRAGMA foreign_keys = ON;
 PRAGMA journal_mode = WAL;
@@ -13,6 +14,7 @@ PRAGMA journal_mode = WAL;
 ## Tablas del Sistema
 
 ### 1. `ajustes`
+
 Almacena la configuración global del local. Solo debe existir un único registro (`id = 1`), creado automáticamente en el seed inicial si no existe.
 
 ```sql
@@ -29,6 +31,7 @@ CREATE TABLE IF NOT EXISTS ajustes (
 ---
 
 ### 2. `categorias`
+
 Clasificación de productos para venta en mesas y barra.
 
 ```sql
@@ -42,6 +45,7 @@ CREATE TABLE IF NOT EXISTS categorias (
 ---
 
 ### 3. `productos`
+
 Catálogo de bebidas, snacks y otros artículos con control de inventario.
 
 ```sql
@@ -60,6 +64,7 @@ CREATE TABLE IF NOT EXISTS productos (
 ---
 
 ### 4. `mesas`
+
 Mesas físicas del salón. Se sincronizan automáticamente con `ajustes.cantidad_mesas` (activando o desactivando mesas según la configuración, sin desactivar una mesa que esté `OCUPADA`).
 
 ```sql
@@ -75,6 +80,7 @@ CREATE TABLE IF NOT EXISTS mesas (
 ---
 
 ### 5. `sesiones`
+
 Control de uso de cada mesa y fuente principal para recuperación tras apagones y reportes de caja.
 
 ```sql
@@ -98,6 +104,7 @@ CREATE TABLE IF NOT EXISTS sesiones (
 ---
 
 ### 6. `detalle_consumo`
+
 Productos cargados a una mesa durante una sesión activa.
 
 ```sql
@@ -117,6 +124,7 @@ CREATE TABLE IF NOT EXISTS detalle_consumo (
 ---
 
 ### 7. `ventas_directas`
+
 Cabecera de ventas rápidas en barra (clientes que consumen sin ocupar mesa).
 
 ```sql
@@ -132,6 +140,7 @@ CREATE TABLE IF NOT EXISTS ventas_directas (
 ---
 
 ### 8. `detalle_venta_directa`
+
 Ítems vendidos en una venta directa de barra.
 
 ```sql
