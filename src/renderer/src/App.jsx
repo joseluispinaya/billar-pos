@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
-import { ShoppingBag, Wallet } from 'lucide-react'
+import { Wallet } from 'lucide-react'
 import Navbar from './components/Navbar'
 import ControlMesas from './pages/ControlMesas'
+import VentasBarra from './pages/VentasBarra'
 import Ajustes from './pages/Ajustes'
 import Productos from './pages/Productos'
 import { useAjustesStore } from './store/useAjustesStore'
@@ -39,13 +40,7 @@ export default function App() {
       <main className="flex-1 pb-10">
         {vistaActual === 'control' && <ControlMesas />}
 
-        {vistaActual === 'barra' && (
-          <PlaceholderView
-            title="Ventas en Barra"
-            description="Registro ágil de pedidos directos y venta de productos sin mesa."
-            icon={ShoppingBag}
-          />
-        )}
+        {vistaActual === 'barra' && <VentasBarra />}
 
         {vistaActual === 'productos' && <Productos />}
 

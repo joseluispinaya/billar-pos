@@ -24,6 +24,10 @@ const api = {
     actualizarConsumo: (idDetalle, delta) =>
       ipcRenderer.invoke('mesas:actualizarConsumo', idDetalle, delta),
     finalizar: (idSesion, metodoPago) => ipcRenderer.invoke('mesas:finalizar', idSesion, metodoPago)
+  },
+  ventas: {
+    registrar: (data) => ipcRenderer.invoke('ventas:registrar', data),
+    getHoy: () => ipcRenderer.invoke('ventas:getHoy')
   }
 }
 

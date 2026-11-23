@@ -15,7 +15,7 @@ function AgregarConsumoContent({ mesa, onClose }) {
   const [guardando, setGuardando] = useState(false)
 
   useEffect(() => {
-    fetchProductos?.().catch(() => { })
+    fetchProductos?.().catch(() => {})
   }, [fetchProductos])
 
   // Filtrado de productos disponibles
@@ -141,10 +141,11 @@ function AgregarConsumoContent({ mesa, onClose }) {
             <button
               type="button"
               onClick={() => setCategoriaSeleccionada('todas')}
-              className={`px-3 py-1 rounded-md font-semibold transition-colors cursor-pointer whitespace-nowrap ${categoriaSeleccionada === 'todas'
+              className={`px-3 py-1 rounded-md font-semibold transition-colors cursor-pointer whitespace-nowrap ${
+                categoriaSeleccionada === 'todas'
                   ? 'bg-primary text-on-primary font-bold shadow-sm shadow-primary/20'
                   : 'bg-surface-container-high text-on-surface-variant hover:text-on-surface border border-surface-variant/30'
-                }`}
+              }`}
             >
               Todos ({productos.length})
             </button>
@@ -153,10 +154,11 @@ function AgregarConsumoContent({ mesa, onClose }) {
                 key={cat.id_categoria}
                 type="button"
                 onClick={() => setCategoriaSeleccionada(String(cat.id_categoria))}
-                className={`px-3 py-1 rounded-md font-semibold transition-colors cursor-pointer whitespace-nowrap ${String(categoriaSeleccionada) === String(cat.id_categoria)
+                className={`px-3 py-1 rounded-md font-semibold transition-colors cursor-pointer whitespace-nowrap ${
+                  String(categoriaSeleccionada) === String(cat.id_categoria)
                     ? 'bg-primary text-on-primary font-bold shadow-sm shadow-primary/20'
                     : 'bg-surface-container-high text-on-surface-variant hover:text-on-surface border border-surface-variant/30'
-                  }`}
+                }`}
               >
                 {cat.nombre}
               </button>
@@ -181,12 +183,13 @@ function AgregarConsumoContent({ mesa, onClose }) {
               return (
                 <div
                   key={prod.id_producto}
-                  className={`p-2.5 rounded-xl border transition-all flex flex-col justify-between ${cantEnBorrador > 0
+                  className={`p-2.5 rounded-xl border transition-all flex flex-col justify-between ${
+                    cantEnBorrador > 0
                       ? 'bg-primary/5 border-primary/40 ring-1 ring-primary/30'
                       : estaAgotado
                         ? 'bg-surface-container-high/40 border-surface-variant/20 opacity-50'
                         : 'bg-surface-container-high border-surface-variant/30 hover:border-surface-variant/60'
-                    }`}
+                  }`}
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
@@ -197,12 +200,13 @@ function AgregarConsumoContent({ mesa, onClose }) {
                         {prod.nombre}
                       </h4>
                       <span
-                        className={`text-[10px] font-medium block mt-0.5 ${estaAgotado
+                        className={`text-[10px] font-medium block mt-0.5 ${
+                          estaAgotado
                             ? 'text-error'
                             : stock <= 5
                               ? 'text-tertiary'
                               : 'text-on-surface-variant'
-                          }`}
+                        }`}
                       >
                         {estaAgotado ? 'Agotado' : `Stock: ${stock} uds.`}
                       </span>

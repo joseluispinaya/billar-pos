@@ -67,10 +67,11 @@ export default function Navbar({ vistaActual, setVistaActual }) {
                 key={item.id}
                 type="button"
                 onClick={() => setVistaActual(item.id)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm transition-all duration-150 cursor-pointer ${isActive
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm transition-all duration-150 cursor-pointer ${
+                  isActive
                     ? 'bg-primary text-on-primary font-bold shadow-sm shadow-primary/20'
                     : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/60 font-semibold'
-                  }`}
+                }`}
               >
                 <Icon
                   className={`w-4 h-4 ${isActive ? 'text-on-primary' : 'text-on-surface-variant'}`}

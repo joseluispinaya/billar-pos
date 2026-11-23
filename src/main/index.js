@@ -6,6 +6,7 @@ import { initDatabase, closeDatabase } from './db/database'
 import { registerAjustesHandlers } from './ipc/ajustesHandlers'
 import { registerProductosHandlers } from './ipc/productosHandlers'
 import { registerMesasHandlers } from './ipc/mesasHandlers'
+import { registerVentasHandlers } from './ipc/ventasHandlers'
 
 function createWindow() {
   // Create the browser window.
@@ -50,6 +51,7 @@ app.whenReady().then(() => {
   registerAjustesHandlers()
   registerProductosHandlers()
   registerMesasHandlers()
+  registerVentasHandlers()
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.
