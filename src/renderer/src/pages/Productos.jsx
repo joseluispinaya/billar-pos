@@ -245,16 +245,18 @@ export default function Productos() {
           </div>
           <div className="my-1">
             <span
-              className={`text-2xl font-bold font-mono tabular-nums ${metricas.stockCritico > 0 ? 'text-tertiary' : 'text-on-surface'
-                }`}
+              className={`text-2xl font-bold font-mono tabular-nums ${
+                metricas.stockCritico > 0 ? 'text-tertiary' : 'text-on-surface'
+              }`}
             >
               {metricas.stockCritico}
             </span>
             <span className="text-xs text-on-surface-variant ml-1.5 font-medium">por agotar</span>
           </div>
           <span
-            className={`text-[11px] font-medium block ${metricas.agotados > 0 ? 'text-error' : 'text-on-surface-variant'
-              }`}
+            className={`text-[11px] font-medium block ${
+              metricas.agotados > 0 ? 'text-error' : 'text-on-surface-variant'
+            }`}
           >
             • {metricas.agotados} sin existencias
           </span>
@@ -290,10 +292,11 @@ export default function Productos() {
                 setCategoriaSeleccionada('todas')
                 setPaginaActual(1)
               }}
-              className={`px-3 py-1 rounded-md text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${categoriaSeleccionada === 'todas'
+              className={`px-3 py-1 rounded-md text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                categoriaSeleccionada === 'todas'
                   ? 'bg-primary text-on-primary font-bold shadow-sm shadow-primary/20'
                   : 'text-on-surface-variant hover:text-on-surface'
-                }`}
+              }`}
             >
               Todos ({productos.length})
             </button>
@@ -309,10 +312,11 @@ export default function Productos() {
                     setCategoriaSeleccionada(String(cat.id_categoria))
                     setPaginaActual(1)
                   }}
-                  className={`px-3 py-1 rounded-md text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${activa
+                  className={`px-3 py-1 rounded-md text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                    activa
                       ? 'bg-primary text-on-primary font-bold shadow-sm shadow-primary/20'
                       : 'text-on-surface-variant hover:text-on-surface'
-                    }`}
+                  }`}
                 >
                   {cat.nombre} ({count})
                 </button>
@@ -510,10 +514,11 @@ export default function Productos() {
                     key={num}
                     type="button"
                     onClick={() => setPaginaActual(num)}
-                    className={`min-w-7 h-7 rounded-md text-xs font-bold transition-all cursor-pointer tabular-nums ${paginaValida === num
+                    className={`min-w-7 h-7 rounded-md text-xs font-bold transition-all cursor-pointer tabular-nums ${
+                      paginaValida === num
                         ? 'bg-primary text-on-primary font-bold shadow-sm shadow-primary/20'
                         : 'bg-surface-container border border-surface-variant/30 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface'
-                      }`}
+                    }`}
                   >
                     {num}
                   </button>

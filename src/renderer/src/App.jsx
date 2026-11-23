@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
-import { LayoutGrid, ShoppingBag, Wallet } from 'lucide-react'
+import { ShoppingBag, Wallet } from 'lucide-react'
 import Navbar from './components/Navbar'
+import ControlMesas from './pages/ControlMesas'
 import Ajustes from './pages/Ajustes'
 import Productos from './pages/Productos'
 import { useAjustesStore } from './store/useAjustesStore'
@@ -21,7 +22,7 @@ function PlaceholderView({ title, description, icon: Icon }) {
 }
 
 export default function App() {
-  const [vistaActual, setVistaActual] = useState('ajustes')
+  const [vistaActual, setVistaActual] = useState('control')
   const ajustes = useAjustesStore((state) => state.ajustes)
   const fetchAjustes = useAjustesStore((state) => state.fetchAjustes)
 
@@ -36,13 +37,7 @@ export default function App() {
       <Navbar vistaActual={vistaActual} setVistaActual={setVistaActual} />
 
       <main className="flex-1 pb-10">
-        {vistaActual === 'control' && (
-          <PlaceholderView
-            title="Control de Mesas"
-            description="Supervisión de mesas en vivo, cronómetros de juego y consumos asociados."
-            icon={LayoutGrid}
-          />
-        )}
+        {vistaActual === 'control' && <ControlMesas />}
 
         {vistaActual === 'barra' && (
           <PlaceholderView

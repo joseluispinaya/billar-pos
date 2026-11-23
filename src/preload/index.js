@@ -15,6 +15,15 @@ const api = {
     update: (id, data) => ipcRenderer.invoke('productos:update', id, data),
     ajustarStock: (id, cantidad) => ipcRenderer.invoke('productos:ajustarStock', id, cantidad),
     remove: (id) => ipcRenderer.invoke('productos:delete', id)
+  },
+  mesas: {
+    getAll: () => ipcRenderer.invoke('mesas:getAll'),
+    iniciar: (idMesa, notaCliente) => ipcRenderer.invoke('mesas:iniciar', idMesa, notaCliente),
+    agregarConsumos: (idSesion, items) =>
+      ipcRenderer.invoke('mesas:agregarConsumos', idSesion, items),
+    actualizarConsumo: (idDetalle, delta) =>
+      ipcRenderer.invoke('mesas:actualizarConsumo', idDetalle, delta),
+    finalizar: (idSesion, metodoPago) => ipcRenderer.invoke('mesas:finalizar', idSesion, metodoPago)
   }
 }
 

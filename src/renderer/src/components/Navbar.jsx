@@ -40,7 +40,7 @@ export default function Navbar({ vistaActual, setVistaActual }) {
     <header className="sticky top-0 z-50 bg-surface-container-high/90 backdrop-blur-md border-b border-surface-variant/30 shadow-lg px-6 py-2.5">
       <div className="flex items-center justify-between gap-4">
         {/* Izquierda: Logo + Nombre del Local */}
-        <div className="flex items-center gap-3 min-w-[220px]">
+        <div className="flex items-center gap-3 min-w-55">
           <img
             src={logoBola}
             alt="Logo Bola 8"
@@ -67,11 +67,10 @@ export default function Navbar({ vistaActual, setVistaActual }) {
                 key={item.id}
                 type="button"
                 onClick={() => setVistaActual(item.id)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm transition-all duration-150 cursor-pointer ${
-                  isActive
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm transition-all duration-150 cursor-pointer ${isActive
                     ? 'bg-primary text-on-primary font-bold shadow-sm shadow-primary/20'
                     : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/60 font-semibold'
-                }`}
+                  }`}
               >
                 <Icon
                   className={`w-4 h-4 ${isActive ? 'text-on-primary' : 'text-on-surface-variant'}`}
@@ -83,7 +82,7 @@ export default function Navbar({ vistaActual, setVistaActual }) {
         </nav>
 
         {/* Derecha: Reloj Digital en Vivo */}
-        <div className="flex items-center justify-end gap-2 text-on-surface text-sm font-medium min-w-[220px]">
+        <div className="flex items-center justify-end gap-2 text-on-surface text-sm font-medium min-w-55">
           <div className="flex items-center gap-2 bg-surface-container-low border border-surface-variant/20 px-3.5 py-1.5 rounded-xl shadow-inner font-mono text-xs md:text-sm text-on-surface tabular-nums">
             <Clock className="w-4 h-4 text-primary" />
             <span className="tracking-wide">{formatClock(currentDate)}</span>
