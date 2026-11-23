@@ -90,6 +90,7 @@ billar-pos/
    - Nunca hagas `DELETE` físico de `productos` o `categorias` con historial; actualiza `activo = 0`.
 
 5. **Lineamientos de Interfaz (UI/UX):**
-   - Interfaz moderna en **modo oscuro** orientada a pantallas de escritorio (uso ágil con mouse/teclado).
-   - Garantiza siempre **alto contraste y legibilidad** en los textos sobre fondos oscuros (evita grises muy tenues que dificulten la lectura).
+   - Usa estrictamente los tokens de color definidos en `@theme` dentro de `src/renderer/src/assets/main.css` (no uses colores oscuros genéricos como `bg-black` o `bg-zinc-950`).
+   - Garantiza siempre **alto contraste y legibilidad** en los textos sobre fondos oscuros.
    - Código modular, limpio y comentado solo donde aporte claridad.
+   - Para **todas** las notificaciones y mensajes de feedback al usuario (crear, editar, ajustar stock, eliminar o errores de validación/IPC), utiliza exclusivamente `toastSuccess`, `toastError` y `confirmarAccion` desde `src/renderer/src/utils/alertas.js`. No uses `alert()` ni `confirm()` nativos.
