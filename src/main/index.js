@@ -4,6 +4,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { initDatabase, closeDatabase } from './db/database'
 import { registerAjustesHandlers } from './ipc/ajustesHandlers'
+import { registerProductosHandlers } from './ipc/productosHandlers'
 
 function createWindow() {
   // Create the browser window.
@@ -46,6 +47,7 @@ app.whenReady().then(() => {
 
   initDatabase()
   registerAjustesHandlers()
+  registerProductosHandlers()
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.

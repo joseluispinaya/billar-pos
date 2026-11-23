@@ -6,6 +6,15 @@ const api = {
   ajustes: {
     get: () => ipcRenderer.invoke('ajustes:get'),
     update: (data) => ipcRenderer.invoke('ajustes:update', data)
+  },
+  productos: {
+    getCategorias: () => ipcRenderer.invoke('categorias:get'),
+    createCategoria: (nombre) => ipcRenderer.invoke('categorias:create', nombre),
+    getAll: () => ipcRenderer.invoke('productos:get'),
+    create: (data) => ipcRenderer.invoke('productos:create', data),
+    update: (id, data) => ipcRenderer.invoke('productos:update', id, data),
+    ajustarStock: (id, cantidad) => ipcRenderer.invoke('productos:ajustarStock', id, cantidad),
+    remove: (id) => ipcRenderer.invoke('productos:delete', id)
   }
 }
 

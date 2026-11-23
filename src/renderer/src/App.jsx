@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
-import { LayoutGrid, ShoppingBag, Package, Wallet } from 'lucide-react'
+import { LayoutGrid, ShoppingBag, Wallet } from 'lucide-react'
 import Navbar from './components/Navbar'
 import Ajustes from './pages/Ajustes'
+import Productos from './pages/Productos'
 import { useAjustesStore } from './store/useAjustesStore'
 
 function PlaceholderView({ title, description, icon: Icon }) {
@@ -51,13 +52,7 @@ export default function App() {
           />
         )}
 
-        {vistaActual === 'productos' && (
-          <PlaceholderView
-            title="Catálogo de Productos y Categorías"
-            description="Administración de inventario, precios y bebidas/snacks del establecimiento."
-            icon={Package}
-          />
-        )}
+        {vistaActual === 'productos' && <Productos />}
 
         {vistaActual === 'caja' && (
           <PlaceholderView
