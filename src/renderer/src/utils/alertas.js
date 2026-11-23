@@ -7,9 +7,9 @@ const DarkToast = Swal.mixin({
   showConfirmButton: false,
   timer: 3000,
   timerProgressBar: true,
-  background: '#0f172a',
-  color: '#f8fafc',
-  iconColor: '#10b981',
+  background: '#131b2e',
+  color: '#dae2fd',
+  iconColor: '#4edea3',
   didOpen: (toast) => {
     toast.addEventListener('mouseenter', Swal.stopTimer)
     toast.addEventListener('mouseleave', Swal.resumeTimer)
@@ -26,7 +26,7 @@ export function toastSuccess(mensaje) {
 export function toastError(mensaje) {
   return DarkToast.fire({
     icon: 'error',
-    iconColor: '#ef4444',
+    iconColor: '#ffb4ab',
     title: mensaje
   })
 }
@@ -43,10 +43,10 @@ export async function confirmarAccion({
     showCancelButton: true,
     confirmButtonText: confirmText,
     cancelButtonText: 'Cancelar',
-    background: '#0f172a',
-    color: '#f8fafc',
-    confirmButtonColor: '#10b981',
-    cancelButtonColor: '#475569',
+    background: '#131b2e',
+    color: '#dae2fd',
+    confirmButtonColor: '#4edea3',
+    cancelButtonColor: '#2d3449',
     reverseButtons: true,
     customClass: {
       popup: 'border border-slate-700/80 rounded-2xl shadow-2xl'

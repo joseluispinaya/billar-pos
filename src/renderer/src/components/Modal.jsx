@@ -28,7 +28,7 @@ export default function Modal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-150"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-surface-container-lowest/80 backdrop-blur-sm animate-in fade-in duration-150"
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           onClose?.()
@@ -36,28 +36,28 @@ export default function Modal({
       }}
     >
       <div
-        className={`bg-[#0f172a] border border-slate-700/80 rounded-2xl shadow-2xl w-full ${maxWidth} overflow-hidden flex flex-col max-h-[90vh]`}
+        className={`bg-surface-container-low border border-surface-variant/50 rounded-2xl shadow-2xl w-full ${maxWidth} overflow-hidden flex flex-col max-h-[90vh]`}
         role="dialog"
         aria-modal="true"
       >
         {/* Cabecera del Modal */}
-        <div className="flex items-center justify-between p-5 border-b border-slate-800 bg-[#111c26]/90">
+        <div className="flex items-center justify-between p-5 border-b border-surface-variant/30 bg-surface-container/90">
           <div className="flex items-center gap-3">
             {Icon && (
-              <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+              <div className="p-2.5 rounded-xl bg-primary/10 border border-primary/20 text-primary">
                 <Icon className="w-5 h-5" />
               </div>
             )}
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-lg font-bold text-white tracking-tight">{title}</h3>
+                <h3 className="text-lg font-bold text-on-surface tracking-tight">{title}</h3>
                 {badge && (
-                  <span className="px-2 py-0.5 rounded-full text-[11px] font-mono font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                  <span className="px-2 py-0.5 rounded-full text-[11px] font-mono font-semibold bg-primary/15 text-primary border border-primary/30">
                     {badge}
                   </span>
                 )}
               </div>
-              {subtitle && <p className="text-xs text-slate-400 mt-0.5">{subtitle}</p>}
+              {subtitle && <p className="text-xs text-on-surface-variant mt-0.5">{subtitle}</p>}
             </div>
           </div>
 
@@ -65,14 +65,14 @@ export default function Modal({
             type="button"
             onClick={onClose}
             aria-label="Cerrar modal"
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Contenido del Modal */}
-        <div className="overflow-y-auto p-6 space-y-5 flex-1">{children}</div>
+        <div className="overflow-y-auto p-6 space-y-5 flex-1 text-on-surface">{children}</div>
       </div>
     </div>
   )

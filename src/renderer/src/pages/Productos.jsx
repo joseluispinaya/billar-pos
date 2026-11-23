@@ -9,7 +9,8 @@ import {
   Boxes,
   ChevronLeft,
   ChevronRight,
-  Coins
+  Coins,
+  PlusCircle
 } from 'lucide-react'
 import Swal from 'sweetalert2'
 import ProductoModal from '../components/ProductoModal'
@@ -85,7 +86,7 @@ export default function Productos() {
     })
   }, [productos, busqueda, categoriaSeleccionada])
 
-  // Paginación sin cascading renders
+  // Paginación
   const totalPaginas = Math.max(1, Math.ceil(productosFiltrados.length / ITEMS_POR_PAGINA))
   const paginaValida = Math.min(Math.max(1, paginaActual), totalPaginas)
 
@@ -125,9 +126,9 @@ export default function Productos() {
     const { value: cantidad } = await Swal.fire({
       title: `Ingreso de Stock`,
       html: `
-        <div style="text-align: left; font-size: 0.875rem; color: #94a3b8; margin-bottom: 0.75rem;">
-          Producto: <strong style="color: #f8fafc;">${producto.nombre}</strong><br/>
-          Stock actual: <strong style="color: #10b981;">${producto.stock_actual} unidades</strong>
+        <div style="text-align: left; font-size: 0.875rem; color: #bbcabf; margin-bottom: 0.75rem;">
+          Producto: <strong style="color: #dae2fd;">${producto.nombre}</strong><br/>
+          Stock actual: <strong style="color: #4edea3;">${producto.stock_actual} unidades</strong>
         </div>
       `,
       input: 'number',
@@ -137,19 +138,19 @@ export default function Productos() {
         min: '1',
         step: '1',
         style:
-          'background: #090f14; border: 1px solid #334155; color: #10b981; font-family: monospace; font-size: 1.125rem; font-weight: bold; border-radius: 0.75rem; padding: 0.5rem 1rem;'
+          'background: #171f33; border: 1px solid #2d3449; color: #4edea3; font-family: monospace; font-size: 1.125rem; font-weight: bold; border-radius: 0.75rem; padding: 0.5rem 1rem;'
       },
       inputValue: 1,
       showCancelButton: true,
       confirmButtonText: 'Sumar Stock',
       cancelButtonText: 'Cancelar',
-      background: '#0f172a',
-      color: '#f8fafc',
-      confirmButtonColor: '#10b981',
-      cancelButtonColor: '#475569',
+      background: '#131b2e',
+      color: '#dae2fd',
+      confirmButtonColor: '#4edea3',
+      cancelButtonColor: '#2d3449',
       reverseButtons: true,
       customClass: {
-        popup: 'border border-slate-700/80 rounded-2xl shadow-2xl'
+        popup: 'border border-surface-variant/50 rounded-2xl shadow-2xl'
       },
       inputValidator: (val) => {
         const num = parseInt(val, 10)
@@ -175,205 +176,194 @@ export default function Productos() {
   const finRango = Math.min(paginaValida * ITEMS_POR_PAGINA, productosFiltrados.length)
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
-      {/* Encabezado + Métricas KPI */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
-              <Package className="w-5 h-5" />
-            </div>
-            <h1 className="text-2xl font-bold text-white tracking-tight">Gestión de Productos</h1>
+    <div className="p-6 max-w-7xl mx-auto space-y-4">
+      {/* Fila superior unificada: grid grid-cols-12 gap-3 */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-stretch">
+        {/* col-span-5: Tarjeta Título */}
+        <div className="col-span-12 md:col-span-5 bg-surface-container-low/95 border border-surface-variant/30 rounded-xl p-3.5 shadow-md flex items-center gap-3">
+          <div className="p-2.5 rounded-xl bg-primary/10 border border-primary/20 text-primary shrink-0">
+            <Package className="w-6 h-6" />
           </div>
-          <p className="text-slate-400 text-sm mt-1">
-            Catálogo y control de inventario en tiempo real para venta en mesas y barra
-          </p>
+          <div>
+            <h1 className="text-xl font-bold text-on-surface tracking-tight leading-tight">
+              Gestión de Productos
+            </h1>
+            <p className="text-on-surface-variant text-xs mt-0.5">
+              Catálogo y control de inventario en tiempo real para venta en mesas y barra
+            </p>
+          </div>
         </div>
-      </div>
 
-      {/* 3 Tarjetas KPI */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* KPI 1: Total Productos */}
-        <div className="bg-[#111c26] border border-slate-800/80 rounded-2xl p-5 shadow-xl flex items-center justify-between">
-          <div className="space-y-1">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
+        {/* col-span-2: KPI Total Productos */}
+        <div className="col-span-12 sm:col-span-4 md:col-span-2 bg-surface-container-low/95 border border-surface-variant/30 rounded-xl p-3.5 shadow-md flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider block">
               Total Productos
             </span>
-            <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-bold font-mono text-white">{metricas.total}</span>
-              <span className="text-xs font-medium text-slate-400">ítems</span>
-            </div>
-            <span className="text-[11px] text-emerald-400/90 font-medium block">
-              ✓ Catálogo activo
+            <Boxes className="w-4 h-4 text-primary/70" />
+          </div>
+          <div className="my-1">
+            <span className="text-2xl font-bold font-mono text-on-surface tabular-nums">
+              {metricas.total}
             </span>
+            <span className="text-xs text-on-surface-variant ml-1.5 font-medium">ítems</span>
           </div>
-          <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
-            <Boxes className="w-6 h-6" />
-          </div>
+          <span className="text-[11px] text-primary font-medium block">✓ 100% catalogados</span>
         </div>
 
-        {/* KPI 2: Valor del Inventario */}
-        <div className="bg-[#111c26] border border-slate-800/80 rounded-2xl p-5 shadow-xl flex items-center justify-between">
-          <div className="space-y-1">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
+        {/* col-span-3: KPI Valor del Inventario */}
+        <div className="col-span-12 sm:col-span-4 md:col-span-3 bg-surface-container-low/95 border border-surface-variant/30 rounded-xl p-3.5 shadow-md flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider block">
               Valor del Inventario
             </span>
-            <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-bold font-mono text-emerald-400">
-                {metricas.valorInventario.toLocaleString('es-BO', {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2
-                })}
-              </span>
-              <span className="text-xs font-bold text-emerald-400/80">Bs.</span>
-            </div>
-            <span className="text-[11px] text-slate-400 block">Cálculo a precio de venta</span>
+            <Coins className="w-4 h-4 text-primary/70" />
           </div>
-          <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
-            <Coins className="w-6 h-6" />
+          <div className="my-1">
+            <span className="text-2xl font-bold font-mono text-primary tabular-nums">
+              {metricas.valorInventario.toLocaleString('es-BO', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+              })}
+            </span>
+            <span className="text-xs font-bold text-primary/80 ml-1.5">Bs.</span>
           </div>
+          <span className="text-[11px] text-on-surface-variant block">
+            Cálculo a precio de venta
+          </span>
         </div>
 
-        {/* KPI 3: Stock Crítico */}
-        <div className="bg-[#111c26] border border-slate-800/80 rounded-2xl p-5 shadow-xl flex items-center justify-between">
-          <div className="space-y-1">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
+        {/* col-span-2: KPI Stock Crítico */}
+        <div className="col-span-12 sm:col-span-4 md:col-span-2 bg-surface-container-low/95 border border-surface-variant/30 rounded-xl p-3.5 shadow-md flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider block">
               Stock Crítico
             </span>
-            <div className="flex items-baseline gap-2">
-              <span
-                className={`text-3xl font-bold font-mono ${
-                  metricas.stockCritico > 0 ? 'text-amber-400' : 'text-white'
-                }`}
-              >
-                {metricas.stockCritico}
-              </span>
-              <span className="text-xs font-medium text-slate-400">por agotar</span>
-            </div>
+            <AlertTriangle
+              className={`w-4 h-4 ${metricas.stockCritico > 0 ? 'text-tertiary' : 'text-on-surface-variant'}`}
+            />
+          </div>
+          <div className="my-1">
             <span
-              className={`text-[11px] font-medium block ${
-                metricas.agotados > 0 ? 'text-rose-400' : 'text-slate-400'
-              }`}
-            >
-              • {metricas.agotados} sin existencias
-            </span>
-          </div>
-          <div
-            className={`p-3 rounded-xl border ${
-              metricas.stockCritico > 0
-                ? 'bg-amber-500/10 border-amber-500/20 text-amber-400'
-                : 'bg-slate-800/40 border-slate-700/60 text-slate-400'
-            }`}
-          >
-            <AlertTriangle className="w-6 h-6" />
-          </div>
-        </div>
-      </div>
-
-      {/* Barra de Herramientas: Buscador + Filtros + Botón Nuevo */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-[#111c26] border border-slate-800/80 rounded-2xl p-4 shadow-xl">
-        {/* Buscador en tiempo real */}
-        <div className="relative flex-1 max-w-md">
-          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-            <Search className="w-4 h-4" />
-          </div>
-          <input
-            type="text"
-            value={busqueda}
-            onChange={(e) => {
-              setBusqueda(e.target.value)
-              setPaginaActual(1)
-            }}
-            placeholder="Buscar por nombre o descripción..."
-            className="w-full pl-10 pr-4 py-2 bg-[#090f14] border border-slate-700/80 rounded-xl text-white placeholder-slate-500 text-sm font-medium focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors"
-          />
-        </div>
-
-        {/* Pestañas de Categoría */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0">
-          <button
-            type="button"
-            onClick={() => {
-              setCategoriaSeleccionada('todas')
-              setPaginaActual(1)
-            }}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
-              categoriaSeleccionada === 'todas'
-                ? 'bg-emerald-500 text-slate-950 font-bold shadow-md shadow-emerald-500/20'
-                : 'bg-[#090f14] text-slate-300 hover:text-white hover:bg-slate-800 border border-slate-800'
-            }`}
-          >
-            Todos ({productos.length})
-          </button>
-
-          {categorias.map((cat) => {
-            const count = contadoresCategorias[String(cat.id_categoria)] || 0
-            const activa = String(categoriaSeleccionada) === String(cat.id_categoria)
-            return (
-              <button
-                key={cat.id_categoria}
-                type="button"
-                onClick={() => {
-                  setCategoriaSeleccionada(String(cat.id_categoria))
-                  setPaginaActual(1)
-                }}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
-                  activa
-                    ? 'bg-emerald-500 text-slate-950 font-bold shadow-md shadow-emerald-500/20'
-                    : 'bg-[#090f14] text-slate-300 hover:text-white hover:bg-slate-800 border border-slate-800'
+              className={`text-2xl font-bold font-mono tabular-nums ${metricas.stockCritico > 0 ? 'text-tertiary' : 'text-on-surface'
                 }`}
-              >
-                {cat.nombre} ({count})
-              </button>
-            )
-          })}
-        </div>
-
-        {/* Botón Nuevo Producto */}
-        <div>
-          <button
-            type="button"
-            onClick={handleAbrirCrear}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-4 py-2 rounded-xl shadow-lg shadow-emerald-500/20 transition-all cursor-pointer text-sm whitespace-nowrap"
+            >
+              {metricas.stockCritico}
+            </span>
+            <span className="text-xs text-on-surface-variant ml-1.5 font-medium">por agotar</span>
+          </div>
+          <span
+            className={`text-[11px] font-medium block ${metricas.agotados > 0 ? 'text-error' : 'text-on-surface-variant'
+              }`}
           >
-            <Plus className="w-4 h-4" />
-            <span>+ Nuevo Producto</span>
-          </button>
+            • {metricas.agotados} sin existencias
+          </span>
         </div>
       </div>
 
-      {/* Tabla de Productos */}
-      <div className="bg-[#111c26] border border-slate-800/80 rounded-2xl shadow-xl overflow-hidden">
+      {/* Contenedor principal de tabla */}
+      <div className="bg-surface-container-low/95 border border-surface-variant/30 rounded-xl overflow-hidden shadow-xl">
+        {/* Toolbar en bg-surface-container/60 */}
+        <div className="bg-surface-container/60 border-b border-surface-variant/20 p-3 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+          {/* Buscador */}
+          <div className="relative flex-1 max-w-md">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-on-surface-variant">
+              <Search className="w-4 h-4" />
+            </div>
+            <input
+              type="text"
+              value={busqueda}
+              onChange={(e) => {
+                setBusqueda(e.target.value)
+                setPaginaActual(1)
+              }}
+              placeholder="Buscar por nombre, código o detalle..."
+              className="w-full pl-9 pr-3.5 py-1.5 bg-surface-container-high border border-surface-variant/30 rounded-lg text-on-surface placeholder-on-surface-variant/50 text-xs font-medium focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+            />
+          </div>
+
+          {/* Pestañas de Categoría */}
+          <div className="flex items-center gap-1 overflow-x-auto bg-surface-container-high p-1 rounded-lg border border-surface-variant/20">
+            <button
+              type="button"
+              onClick={() => {
+                setCategoriaSeleccionada('todas')
+                setPaginaActual(1)
+              }}
+              className={`px-3 py-1 rounded-md text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${categoriaSeleccionada === 'todas'
+                  ? 'bg-primary text-on-primary font-bold shadow-sm shadow-primary/20'
+                  : 'text-on-surface-variant hover:text-on-surface'
+                }`}
+            >
+              Todos ({productos.length})
+            </button>
+
+            {categorias.map((cat) => {
+              const count = contadoresCategorias[String(cat.id_categoria)] || 0
+              const activa = String(categoriaSeleccionada) === String(cat.id_categoria)
+              return (
+                <button
+                  key={cat.id_categoria}
+                  type="button"
+                  onClick={() => {
+                    setCategoriaSeleccionada(String(cat.id_categoria))
+                    setPaginaActual(1)
+                  }}
+                  className={`px-3 py-1 rounded-md text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${activa
+                      ? 'bg-primary text-on-primary font-bold shadow-sm shadow-primary/20'
+                      : 'text-on-surface-variant hover:text-on-surface'
+                    }`}
+                >
+                  {cat.nombre} ({count})
+                </button>
+              )
+            })}
+          </div>
+
+          {/* Botón Nuevo Producto */}
+          <div>
+            <button
+              type="button"
+              onClick={handleAbrirCrear}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 bg-primary hover:bg-primary-container text-on-primary font-bold px-3.5 py-1.5 rounded-lg shadow-sm shadow-primary/20 transition-all cursor-pointer text-xs whitespace-nowrap"
+            >
+              <PlusCircle className="w-4 h-4" />
+              <span>Nuevo Producto</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Tabla */}
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm border-collapse">
+          <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="border-b border-slate-800 bg-[#0c141c] text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                <th className="py-3.5 px-5">Producto / Descripción</th>
-                <th className="py-3.5 px-4">Categoría</th>
-                <th className="py-3.5 px-4 text-right">Precio Unitario</th>
-                <th className="py-3.5 px-4 text-center">Stock Actual</th>
-                <th className="py-3.5 px-5 text-right">Acciones</th>
+              <tr className="bg-surface-container text-on-surface-variant uppercase text-[11px] font-bold tracking-wider border-b border-surface-variant/30">
+                <th className="py-3 px-4">Producto / Detalle</th>
+                <th className="py-3 px-3">Categoría</th>
+                <th className="py-3 px-3 text-right">Precio Unitario</th>
+                <th className="py-3 px-3 text-center">Stock Actual</th>
+                <th className="py-3 px-4 text-right">Acciones</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60">
+            <tbody className="divide-y divide-surface-variant/20 divide-dashed">
               {loading && productos.length === 0 ? (
                 <tr>
-                  <td colSpan="5" className="py-12 text-center text-slate-400">
-                    <div className="inline-block w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mb-2" />
-                    <p className="text-sm">Cargando inventario...</p>
+                  <td colSpan="5" className="py-10 text-center text-on-surface-variant">
+                    <div className="inline-block w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin mb-2" />
+                    <p className="text-xs">Cargando inventario...</p>
                   </td>
                 </tr>
               ) : productosPaginados.length === 0 ? (
                 <tr>
-                  <td colSpan="5" className="py-12 text-center text-slate-400">
-                    <Package className="w-10 h-10 mx-auto text-slate-600 mb-2" />
-                    <p className="text-base font-semibold text-slate-300">
+                  <td colSpan="5" className="py-10 text-center text-on-surface-variant">
+                    <Package className="w-8 h-8 mx-auto text-surface-variant mb-2" />
+                    <p className="text-sm font-semibold text-on-surface">
                       No se encontraron productos
                     </p>
-                    <p className="text-xs text-slate-500 mt-1">
+                    <p className="text-xs text-on-surface-variant mt-0.5">
                       {busqueda
                         ? 'Prueba ajustando el término de búsqueda o el filtro.'
-                        : 'Comienza agregando tu primer producto con el botón "+ Nuevo Producto".'}
+                        : 'Comienza agregando tu primer producto con el botón "Nuevo Producto".'}
                     </p>
                   </td>
                 </tr>
@@ -383,29 +373,29 @@ export default function Productos() {
                   const isAgotado = stockNum === 0
                   const isBajo = stockNum > 0 && stockNum <= 5
 
-                  let rowBg = 'hover:bg-slate-800/40 transition-colors'
+                  let rowBg = 'hover:bg-surface-container/40 transition-colors'
                   if (isAgotado) {
                     rowBg =
-                      'bg-rose-950/15 hover:bg-rose-950/25 border-l-2 border-l-rose-500 transition-colors'
+                      'bg-error-container/10 hover:bg-error-container/20 border-l-2 border-l-error transition-colors'
                   } else if (isBajo) {
                     rowBg =
-                      'bg-amber-950/15 hover:bg-amber-950/25 border-l-2 border-l-amber-500 transition-colors'
+                      'bg-tertiary-container/10 hover:bg-tertiary-container/20 border-l-2 border-l-tertiary transition-colors'
                   }
 
                   return (
                     <tr key={p.id_producto} className={rowBg}>
                       {/* Columna: Nombre y Descripción */}
-                      <td className="py-3.5 px-5">
-                        <div className="flex items-center gap-3">
-                          <div className="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300">
-                            <Package className="w-4 h-4 text-emerald-400" />
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-2.5">
+                          <div className="p-1.5 rounded-lg bg-surface-container border border-surface-variant/30 text-primary">
+                            <Package className="w-3.5 h-3.5" />
                           </div>
                           <div>
-                            <span className="font-semibold text-white block text-sm">
+                            <span className="font-semibold text-on-surface block text-xs">
                               {p.nombre}
                             </span>
                             {p.descripcion && (
-                              <span className="text-xs text-slate-400 block line-clamp-1">
+                              <span className="text-[11px] text-on-surface-variant block line-clamp-1">
                                 {p.descripcion}
                               </span>
                             )}
@@ -414,32 +404,34 @@ export default function Productos() {
                       </td>
 
                       {/* Columna: Categoría */}
-                      <td className="py-3.5 px-4 whitespace-nowrap">
-                        <span className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#090f14] text-slate-300 border border-slate-800">
+                      <td className="py-3 px-3 whitespace-nowrap">
+                        <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-surface-container text-on-surface-variant border border-surface-variant/30">
                           {p.categoria_nombre || 'Sin categoría'}
                         </span>
                       </td>
 
                       {/* Columna: Precio Unitario */}
-                      <td className="py-3.5 px-4 text-right whitespace-nowrap font-mono font-bold text-white text-sm">
+                      <td className="py-3 px-3 text-right whitespace-nowrap font-mono font-bold text-on-surface tabular-nums text-xs">
                         {Number(p.precio_venta).toFixed(2)}{' '}
-                        <span className="text-xs text-slate-400 font-normal">Bs.</span>
+                        <span className="text-[10px] text-on-surface-variant font-normal">Bs.</span>
                       </td>
 
                       {/* Columna: Stock con Badge */}
-                      <td className="py-3.5 px-4 text-center whitespace-nowrap">
-                        <div className="inline-flex items-center gap-2 font-mono">
-                          <span className="font-bold text-sm text-white">{stockNum} uds.</span>
+                      <td className="py-3 px-3 text-center whitespace-nowrap">
+                        <div className="inline-flex items-center gap-1.5 font-mono">
+                          <span className="font-bold text-xs text-on-surface tabular-nums">
+                            {stockNum} uds.
+                          </span>
                           {isAgotado ? (
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30">
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-error-container/30 text-error border border-error/40 tabular-nums">
                               • Agotado
                             </span>
                           ) : isBajo ? (
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-tertiary-container/30 text-tertiary border border-tertiary/40 tabular-nums">
                               ⚠️ Stock Bajo
                             </span>
                           ) : (
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary-container/20 text-primary border border-primary/30 tabular-nums">
                               • En Stock
                             </span>
                           )}
@@ -447,16 +439,16 @@ export default function Productos() {
                       </td>
 
                       {/* Columna: Acciones */}
-                      <td className="py-3.5 px-5 text-right whitespace-nowrap">
-                        <div className="inline-flex items-center gap-1.5 justify-end">
+                      <td className="py-3 px-4 text-right whitespace-nowrap">
+                        <div className="inline-flex items-center gap-1 justify-end">
                           {/* Botón rápido + para sumar stock */}
                           <button
                             type="button"
                             onClick={() => handleSumarStock(p)}
                             title="Ingreso rápido de stock"
-                            className="p-1.5 rounded-lg bg-[#090f14] hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 border border-emerald-500/30 transition-all cursor-pointer"
+                            className="p-1.5 rounded-md bg-surface-container hover:bg-primary hover:text-on-primary text-primary border border-primary/30 transition-all cursor-pointer"
                           >
-                            <Plus className="w-4 h-4" />
+                            <Plus className="w-3.5 h-3.5" />
                           </button>
 
                           {/* Botón Editar */}
@@ -464,9 +456,9 @@ export default function Productos() {
                             type="button"
                             onClick={() => handleAbrirEditar(p)}
                             title="Editar producto"
-                            className="p-1.5 rounded-lg bg-[#090f14] hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-800 transition-all cursor-pointer"
+                            className="p-1.5 rounded-md bg-surface-container hover:bg-surface-container-highest text-on-surface-variant hover:text-on-surface border border-surface-variant/30 transition-all cursor-pointer"
                           >
-                            <Pencil className="w-4 h-4" />
+                            <Pencil className="w-3.5 h-3.5" />
                           </button>
 
                           {/* Botón Eliminar */}
@@ -474,9 +466,9 @@ export default function Productos() {
                             type="button"
                             onClick={() => handleEliminar(p)}
                             title="Dar de baja producto"
-                            className="p-1.5 rounded-lg bg-[#090f14] hover:bg-rose-500 hover:text-white text-rose-400 border border-rose-500/20 transition-all cursor-pointer"
+                            className="p-1.5 rounded-md bg-surface-container hover:bg-error-container hover:text-on-error-container text-error border border-error/30 transition-all cursor-pointer"
                           >
-                            <Trash2 className="w-4 h-4" />
+                            <Trash2 className="w-3.5 h-3.5" />
                           </button>
                         </div>
                       </td>
@@ -490,23 +482,26 @@ export default function Productos() {
 
         {/* Paginación */}
         {productosFiltrados.length > 0 && (
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-slate-800 bg-[#0c141c] text-xs text-slate-400">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3 bg-surface-container/70 border-t border-surface-variant/20 text-xs text-on-surface-variant">
             <div>
-              Mostrando <span className="font-bold text-white">{inicioRango}</span> -{' '}
-              <span className="font-bold text-white">{finRango}</span> de{' '}
-              <span className="font-bold text-white">{productosFiltrados.length}</span> productos
-              registrados
+              Mostrando{' '}
+              <span className="font-bold text-on-surface tabular-nums">{inicioRango}</span> -{' '}
+              <span className="font-bold text-on-surface tabular-nums">{finRango}</span> de{' '}
+              <span className="font-bold text-on-surface tabular-nums">
+                {productosFiltrados.length}
+              </span>{' '}
+              productos registrados
             </div>
 
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1">
               <button
                 type="button"
                 onClick={() => setPaginaActual((prev) => Math.max(1, prev - 1))}
                 disabled={paginaValida === 1}
-                className="p-1.5 rounded-lg bg-[#090f14] border border-slate-800 hover:bg-slate-800 text-slate-300 disabled:opacity-40 disabled:hover:bg-[#090f14] cursor-pointer transition-colors"
+                className="p-1 rounded-md bg-surface-container border border-surface-variant/30 hover:bg-surface-container-high text-on-surface disabled:opacity-30 cursor-pointer transition-colors"
                 title="Página anterior"
               >
-                <ChevronLeft className="w-4 h-4" />
+                <ChevronLeft className="w-3.5 h-3.5" />
               </button>
 
               <div className="flex items-center gap-1 font-mono">
@@ -515,11 +510,10 @@ export default function Productos() {
                     key={num}
                     type="button"
                     onClick={() => setPaginaActual(num)}
-                    className={`min-w-[32px] h-8 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                      paginaValida === num
-                        ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20'
-                        : 'bg-[#090f14] border border-slate-800 text-slate-300 hover:bg-slate-800'
-                    }`}
+                    className={`min-w-7 h-7 rounded-md text-xs font-bold transition-all cursor-pointer tabular-nums ${paginaValida === num
+                        ? 'bg-primary text-on-primary font-bold shadow-sm shadow-primary/20'
+                        : 'bg-surface-container border border-surface-variant/30 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface'
+                      }`}
                   >
                     {num}
                   </button>
@@ -530,10 +524,10 @@ export default function Productos() {
                 type="button"
                 onClick={() => setPaginaActual((prev) => Math.min(totalPaginas, prev + 1))}
                 disabled={paginaValida === totalPaginas}
-                className="p-1.5 rounded-lg bg-[#090f14] border border-slate-800 hover:bg-slate-800 text-slate-300 disabled:opacity-40 disabled:hover:bg-[#090f14] cursor-pointer transition-colors"
+                className="p-1 rounded-md bg-surface-container border border-surface-variant/30 hover:bg-surface-container-high text-on-surface disabled:opacity-30 cursor-pointer transition-colors"
                 title="Página siguiente"
               >
-                <ChevronRight className="w-4 h-4" />
+                <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
           </div>

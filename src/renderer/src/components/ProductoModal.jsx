@@ -108,8 +108,8 @@ function ProductoForm({ productoEditar, onClose }) {
     <form onSubmit={handleSubmit} className="space-y-5">
       {/* Sección A: Información Básica */}
       <div className="space-y-4">
-        <div className="flex items-center gap-2 text-xs font-bold text-emerald-400 uppercase tracking-wider">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+        <div className="flex items-center gap-2 text-xs font-bold text-primary uppercase tracking-wider">
+          <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
           <span>A. Información Básica del Artículo</span>
         </div>
 
@@ -117,10 +117,10 @@ function ProductoForm({ productoEditar, onClose }) {
         <div className="space-y-1.5">
           <label
             htmlFor="nombre"
-            className="text-xs font-semibold text-slate-200 flex items-center justify-between"
+            className="text-xs font-semibold text-on-surface flex items-center justify-between"
           >
             <span>Nombre Comercial del Producto *</span>
-            <span className="text-[11px] text-slate-400 font-normal">
+            <span className="text-[11px] text-on-surface-variant font-normal">
               Visible en comandas y ventas
             </span>
           </label>
@@ -131,20 +131,20 @@ function ProductoForm({ productoEditar, onClose }) {
             value={formData.nombre}
             onChange={(e) => setFormData((prev) => ({ ...prev, nombre: e.target.value }))}
             placeholder="Ej: Cerveza Huari 620ml, Papas Lays..."
-            className="w-full px-3.5 py-2.5 bg-[#090f14] border border-slate-700/80 rounded-xl text-white placeholder-slate-500 text-sm font-medium focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors"
+            className="w-full px-3.5 py-2.5 bg-surface-container-high border border-surface-variant/40 rounded-xl text-on-surface placeholder-on-surface-variant/50 text-sm font-medium focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
           />
         </div>
 
         {/* Categoría */}
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
-            <label htmlFor="id_categoria" className="text-xs font-semibold text-slate-200">
+            <label htmlFor="id_categoria" className="text-xs font-semibold text-on-surface">
               Categoría *
             </label>
             <button
               type="button"
               onClick={() => setMostrandoNuevaCat(!mostrandoNuevaCat)}
-              className="text-[11px] font-semibold text-emerald-400 hover:text-emerald-300 flex items-center gap-1 cursor-pointer transition-colors"
+              className="text-[11px] font-semibold text-primary hover:text-primary-container flex items-center gap-1 cursor-pointer transition-colors"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>{mostrandoNuevaCat ? 'Cancelar' : 'Nueva categoría'}</span>
@@ -152,18 +152,18 @@ function ProductoForm({ productoEditar, onClose }) {
           </div>
 
           {mostrandoNuevaCat ? (
-            <div className="p-3 bg-[#111c26] border border-slate-700/80 rounded-xl flex items-center gap-2">
+            <div className="p-3 bg-surface-container border border-surface-variant/40 rounded-xl flex items-center gap-2">
               <input
                 type="text"
                 value={nuevaCatNombre}
                 onChange={(e) => setNuevaCatNombre(e.target.value)}
                 placeholder="Nombre de la nueva categoría..."
-                className="flex-1 px-3 py-1.5 bg-[#090f14] border border-slate-700 rounded-lg text-white text-xs placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                className="flex-1 px-3 py-1.5 bg-surface-container-high border border-surface-variant/40 rounded-lg text-on-surface text-xs placeholder-on-surface-variant/50 focus:outline-none focus:border-primary"
               />
               <button
                 type="button"
                 onClick={handleCrearCategoria}
-                className="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-lg transition-colors cursor-pointer"
+                className="px-3 py-1.5 bg-primary hover:bg-primary-container text-on-primary font-bold text-xs rounded-lg transition-colors cursor-pointer"
               >
                 Guardar
               </button>
@@ -180,7 +180,7 @@ function ProductoForm({ productoEditar, onClose }) {
                     id_categoria: e.target.value
                   }))
                 }
-                className="w-full px-3.5 py-2.5 bg-[#090f14] border border-slate-700/80 rounded-xl text-white text-sm font-medium focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors cursor-pointer"
+                className="w-full px-3.5 py-2.5 bg-surface-container-high border border-surface-variant/40 rounded-xl text-on-surface text-sm font-medium focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors cursor-pointer"
               >
                 <option value="" disabled>
                   -- Seleccionar Categoría --
@@ -197,7 +197,7 @@ function ProductoForm({ productoEditar, onClose }) {
 
         {/* Descripción */}
         <div className="space-y-1.5">
-          <label htmlFor="descripcion" className="text-xs font-semibold text-slate-200">
+          <label htmlFor="descripcion" className="text-xs font-semibold text-on-surface">
             Descripción / Presentación (Opcional)
           </label>
           <input
@@ -211,26 +211,26 @@ function ProductoForm({ productoEditar, onClose }) {
               }))
             }
             placeholder="Ej: Botella de vidrio retornable, Paquete 120g..."
-            className="w-full px-3.5 py-2.5 bg-[#090f14] border border-slate-700/80 rounded-xl text-white placeholder-slate-500 text-sm font-medium focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors"
+            className="w-full px-3.5 py-2.5 bg-surface-container-high border border-surface-variant/40 rounded-xl text-on-surface placeholder-on-surface-variant/50 text-sm font-medium focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
           />
         </div>
       </div>
 
       {/* Sección B: Finanzas y Stock */}
-      <div className="space-y-4 pt-2 border-t border-slate-800">
-        <div className="flex items-center gap-2 text-xs font-bold text-emerald-400 uppercase tracking-wider">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+      <div className="space-y-4 pt-2 border-t border-surface-variant/30">
+        <div className="flex items-center gap-2 text-xs font-bold text-primary uppercase tracking-wider">
+          <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
           <span>B. Precio de Venta y Control de Stock</span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* Precio de Venta */}
           <div className="space-y-1.5">
-            <label htmlFor="precio_venta" className="text-xs font-semibold text-slate-200">
+            <label htmlFor="precio_venta" className="text-xs font-semibold text-on-surface">
               Precio de Venta (Bs.) *
             </label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-emerald-400 font-bold text-xs">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-primary font-bold text-xs">
                 Bs.
               </div>
               <input
@@ -247,18 +247,18 @@ function ProductoForm({ productoEditar, onClose }) {
                   }))
                 }
                 placeholder="0.00"
-                className="w-full pl-10 pr-3.5 py-2.5 bg-[#090f14] border border-slate-700/80 rounded-xl text-emerald-400 font-mono font-bold text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors"
+                className="w-full pl-10 pr-3.5 py-2.5 bg-surface-container-high border border-surface-variant/40 rounded-xl text-primary font-mono font-bold text-sm tabular-nums focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
               />
             </div>
           </div>
 
           {/* Stock Actual */}
           <div className="space-y-1.5">
-            <label htmlFor="stock_actual" className="text-xs font-semibold text-slate-200">
+            <label htmlFor="stock_actual" className="text-xs font-semibold text-on-surface">
               {isEditing ? 'Stock Actual (Unidades) *' : 'Stock Inicial (Unidades) *'}
             </label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-on-surface-variant">
                 <Layers className="w-4 h-4" />
               </div>
               <input
@@ -275,7 +275,7 @@ function ProductoForm({ productoEditar, onClose }) {
                   }))
                 }
                 placeholder="0"
-                className="w-full pl-10 pr-3.5 py-2.5 bg-[#090f14] border border-slate-700/80 rounded-xl text-white font-mono font-bold text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors"
+                className="w-full pl-10 pr-3.5 py-2.5 bg-surface-container-high border border-surface-variant/40 rounded-xl text-on-surface font-mono font-bold text-sm tabular-nums focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
               />
             </div>
           </div>
@@ -283,23 +283,23 @@ function ProductoForm({ productoEditar, onClose }) {
       </div>
 
       {/* Botones de Acción */}
-      <div className="pt-4 border-t border-slate-800 flex items-center justify-end gap-3">
+      <div className="pt-4 border-t border-surface-variant/30 flex items-center justify-end gap-3">
         <button
           type="button"
           onClick={onClose}
           disabled={guardando}
-          className="px-5 py-2.5 rounded-xl border border-slate-700 hover:bg-slate-800 text-slate-300 font-semibold text-sm transition-colors cursor-pointer disabled:opacity-50"
+          className="px-5 py-2.5 rounded-xl border border-surface-variant/40 hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface font-semibold text-sm transition-colors cursor-pointer disabled:opacity-50"
         >
           Cancelar
         </button>
         <button
           type="submit"
           disabled={guardando}
-          className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-6 py-2.5 rounded-xl shadow-lg shadow-emerald-500/20 transition-all cursor-pointer disabled:opacity-60 text-sm"
+          className="inline-flex items-center gap-2 bg-primary hover:bg-primary-container text-on-primary font-bold px-6 py-2.5 rounded-xl shadow-md shadow-primary/20 transition-all cursor-pointer disabled:opacity-60 text-sm"
         >
           {guardando ? (
             <>
-              <div className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
+              <div className="w-4 h-4 border-2 border-on-primary border-t-transparent rounded-full animate-spin" />
               <span>Guardando...</span>
             </>
           ) : (

@@ -8,12 +8,12 @@ import { useAjustesStore } from './store/useAjustesStore'
 function PlaceholderView({ title, description, icon: Icon }) {
   return (
     <div className="p-8 max-w-5xl mx-auto flex flex-col items-center justify-center min-h-[60vh] text-center">
-      <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 text-emerald-400 mb-4 shadow-xl">
+      <div className="p-4 rounded-2xl bg-surface-container-low border border-surface-variant/30 text-primary mb-4 shadow-xl">
         <Icon className="w-10 h-10" />
       </div>
-      <h2 className="text-2xl font-bold text-white mb-2">{title}</h2>
-      <p className="text-slate-400 max-w-md text-sm">{description}</p>
-      <div className="mt-6 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-xs font-mono text-slate-400">
+      <h2 className="text-2xl font-bold text-on-surface mb-2">{title}</h2>
+      <p className="text-on-surface-variant max-w-md text-sm">{description}</p>
+      <div className="mt-6 px-3.5 py-1 rounded-full bg-surface-container-low border border-surface-variant/30 text-xs font-mono text-on-surface-variant">
         Módulo en preparación
       </div>
     </div>
@@ -32,7 +32,7 @@ export default function App() {
   }, [fetchAjustes])
 
   return (
-    <div className="min-h-screen bg-[#070b0e] text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-surface text-on-surface flex flex-col">
       <Navbar vistaActual={vistaActual} setVistaActual={setVistaActual} />
 
       <main className="flex-1 pb-10">
