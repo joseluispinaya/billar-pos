@@ -28,6 +28,11 @@ const api = {
   ventas: {
     registrar: (data) => ipcRenderer.invoke('ventas:registrar', data),
     getHoy: () => ipcRenderer.invoke('ventas:getHoy')
+  },
+  caja: {
+    getReporte: (params) => ipcRenderer.invoke('caja:getReporte', params),
+    getDetalleSesion: (idSesion) => ipcRenderer.invoke('caja:getDetalleSesion', idSesion),
+    getDetalleVentaBarra: (idVenta) => ipcRenderer.invoke('caja:getDetalleVentaBarra', idVenta)
   }
 }
 
