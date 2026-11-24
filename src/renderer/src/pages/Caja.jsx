@@ -174,46 +174,392 @@ export default function Caja() {
   }, [itemsPaginados, tabActivo])
 
   return (
-    <div className="p-4 h-[calc(100vh-4.5rem)] flex flex-col gap-3 overflow-hidden">
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 h-[calc(100vh-4.5rem)] overflow-hidden p-4">
       {/* ============================================================== */}
-      {/* FILA 1: TARJETAS KPI (4 Columnas)                             */}
+      {/* 1. COLUMNA IZQUIERDA (75% -> lg:col-span-9): Control + Tabla    */}
       {/* ============================================================== */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 shrink-0">
-        {/* KPI 1: Total Recaudado */}
-        <div className="bg-surface-container-low/95 border border-surface-variant/30 rounded-xl p-3 shadow-md flex flex-col justify-between">
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-on-surface-variant">
-              Total Recaudado
-            </span>
-            <div className="p-1.5 rounded-lg bg-primary/10 text-primary border border-primary/20">
-              <Wallet className="w-4 h-4" />
+      <div className="lg:col-span-9 flex flex-col gap-3 min-h-0 overflow-hidden">
+        {/* Barra de Control */}
+        <div className="bg-surface-container-low/95 border border-surface-variant/30 rounded-xl p-3 flex flex-col md:flex-row items-center justify-between gap-3 shrink-0 shadow-md">
+          {/* Título y Tabs de Vista */}
+          <div className="flex items-center gap-4 w-full md:w-auto">
+            <h2 className="text-sm font-bold text-on-surface flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-primary" />
+              Reporte de Caja
+            </h2>
+
+            <div className="flex items-center gap-1 bg-surface-container p-1 rounded-lg border border-surface-variant/30">
+              <button
+                type="button"
+                onClick={() => handleCambiarTab('mesas')}
+                className={`px-3 py-1 rounded-md text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer ${
+                  tabActivo === 'mesas'
+                    ? 'bg-primary text-on-primary font-bold shadow-sm shadow-primary/20'
+                    : 'text-on-surface-variant hover:text-on-surface'
+                }`}
+              >
+                <Layers className="w-3.5 h-3.5" />
+                Mesas ({sesiones.length})
+              </button>
+              <button
+                type="button"
+                onClick={() => handleCambiarTab('barra')}
+                className={`px-3 py-1 rounded-md text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer ${
+                  tabActivo === 'barra'
+                    ? 'bg-primary text-on-primary font-bold shadow-sm shadow-primary/20'
+                    : 'text-on-surface-variant hover:text-on-surface'
+                }`}
+              >
+                <ShoppingBag className="w-3.5 h-3.5" />
+                Barra ({ventasBarra.length})
+              </button>
             </div>
           </div>
-          <div>
-            <div className="text-2xl font-black font-mono text-primary tabular-nums tracking-tight">
-              {Number(kpis?.totalRecaudado || 0).toFixed(2)}{' '}
-              <span className="text-xs font-normal text-on-surface-variant">Bs.</span>
-            </div>
-            <div className="mt-1 flex items-center justify-between text-[11px] text-on-surface-variant font-mono tabular-nums border-t border-surface-variant/20 pt-1">
-              <span>
-                Efvo:{' '}
-                <strong className="text-on-surface">
-                  {Number(kpis?.totalEfectivo || 0).toFixed(2)} Bs.
-                </strong>
+
+          {/* Selectores de Fechas y Botón Exportar PDF */}
+          <div className="flex flex-wrap items-center gap-2 w-full md:w-auto justify-end">
+            <button
+              type="button"
+              onClick={handleHoy}
+              className="px-2.5 py-1.5 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface border border-surface-variant/40 text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
+              title="Ver movimientos del día actual"
+            >
+              <RotateCcw className="w-3 h-3 text-primary" />
+              Hoy
+            </button>
+
+            <div className="flex items-center gap-1.5 bg-surface-container border border-surface-variant/40 px-2.5 py-1 rounded-lg text-xs">
+              <span className="text-[10px] uppercase font-semibold text-on-surface-variant">
+                Desde:
               </span>
-              <span className="text-surface-variant">•</span>
-              <span>
-                QR:{' '}
-                <strong className="text-secondary">
-                  {Number(kpis?.totalQr || 0).toFixed(2)} Bs.
-                </strong>
-              </span>
+              <input
+                type="date"
+                value={inputFechaInicio}
+                onChange={(e) => {
+                  setInputFechaInicio(e.target.value)
+                  handleFiltrarFechas(e.target.value, inputFechaFin)
+                }}
+                className="bg-transparent text-on-surface text-xs focus:outline-none cursor-pointer"
+              />
             </div>
+
+            <div className="flex items-center gap-1.5 bg-surface-container border border-surface-variant/40 px-2.5 py-1 rounded-lg text-xs">
+              <span className="text-[10px] uppercase font-semibold text-on-surface-variant">
+                Hasta:
+              </span>
+              <input
+                type="date"
+                value={inputFechaFin}
+                onChange={(e) => {
+                  setInputFechaFin(e.target.value)
+                  handleFiltrarFechas(inputFechaInicio, e.target.value)
+                }}
+                className="bg-transparent text-on-surface text-xs focus:outline-none cursor-pointer"
+              />
+            </div>
+
+            <button
+              type="button"
+              onClick={handleGenerarPdf}
+              disabled={loading}
+              className="px-3.5 py-1.5 rounded-lg bg-primary hover:bg-primary-container text-on-primary text-xs font-bold flex items-center gap-1.5 shadow-sm shadow-primary/20 transition-all cursor-pointer disabled:opacity-50"
+              title="Descargar reporte detallado en PDF"
+            >
+              <FileDown className="w-3.5 h-3.5" />
+              Generar Reporte PDF
+            </button>
           </div>
         </div>
 
-        {/* KPI 2: Ingreso Tiempo de Mesa */}
-        <div className="bg-surface-container-low/95 border border-surface-variant/30 rounded-xl p-3 shadow-md flex flex-col justify-between">
+        {/* Contenedor de la Tabla */}
+        <div className="bg-surface-container-low/95 border border-surface-variant/30 rounded-xl overflow-hidden shadow-md flex-1 flex flex-col min-h-0">
+          {/* Barra superior de la tabla: Subfiltros de Método de Pago */}
+          <div className="bg-surface-container/60 p-2.5 px-3 border-b border-surface-variant/30 flex items-center justify-between shrink-0">
+            <div className="flex items-center gap-1.5 text-xs">
+              <span className="text-[10px] uppercase font-semibold text-on-surface-variant tracking-wider mr-1">
+                Método de Pago:
+              </span>
+              <button
+                type="button"
+                onClick={() => handleCambiarFiltroPago('TODOS')}
+                className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-colors cursor-pointer ${
+                  filtroPago === 'TODOS'
+                    ? 'bg-primary text-on-primary font-bold shadow-xs'
+                    : 'bg-surface-container-high text-on-surface-variant hover:text-on-surface border border-surface-variant/30'
+                }`}
+              >
+                Todos ({contadoresPago.todos})
+              </button>
+              <button
+                type="button"
+                onClick={() => handleCambiarFiltroPago('EFECTIVO')}
+                className={`px-2.5 py-1 rounded-md text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer ${
+                  filtroPago === 'EFECTIVO'
+                    ? 'bg-primary text-on-primary font-bold shadow-xs'
+                    : 'bg-surface-container-high text-on-surface-variant hover:text-on-surface border border-surface-variant/30'
+                }`}
+              >
+                <Banknote className="w-3.5 h-3.5" />
+                Efectivo ({contadoresPago.efectivo})
+              </button>
+              <button
+                type="button"
+                onClick={() => handleCambiarFiltroPago('QR')}
+                className={`px-2.5 py-1 rounded-md text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer ${
+                  filtroPago === 'QR'
+                    ? 'bg-primary text-on-primary font-bold shadow-xs'
+                    : 'bg-surface-container-high text-on-surface-variant hover:text-on-surface border border-surface-variant/30'
+                }`}
+              >
+                <QrCode className="w-3.5 h-3.5" />
+                QR Simple ({contadoresPago.qr})
+              </button>
+            </div>
+
+            <div className="text-[11px] font-mono text-on-surface-variant tabular-nums">
+              Mostrando <strong className="text-on-surface">{listaFiltrada.length}</strong>{' '}
+              registros
+            </div>
+          </div>
+
+          {/* Tabla con scroll interno */}
+          <div className="flex-1 overflow-y-auto min-h-0">
+            {loading ? (
+              <div className="flex flex-col items-center justify-center h-48 text-on-surface-variant text-xs">
+                <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mb-2" />
+                Cargando registros de caja...
+              </div>
+            ) : itemsPaginados.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-48 text-on-surface-variant text-xs">
+                <Wallet className="w-8 h-8 opacity-40 mb-1" />
+                <p>No se encontraron registros para los filtros seleccionados.</p>
+              </div>
+            ) : tabActivo === 'mesas' ? (
+              /* TABLA DE SESIONES DE MESAS */
+              <table className="w-full text-left text-xs">
+                <thead className="bg-surface-container text-on-surface-variant text-[10px] uppercase tracking-wider sticky top-0 z-10 border-b border-surface-variant/30">
+                  <tr>
+                    <th className="py-2.5 px-4 font-semibold">Mesa / Horario</th>
+                    <th className="py-2.5 px-4 font-semibold">Tiempo / Costo</th>
+                    <th className="py-2.5 px-4 font-semibold">Consumo</th>
+                    <th className="py-2.5 px-4 font-semibold text-right">Total / Pago</th>
+                    <th className="py-2.5 px-4 font-semibold text-center">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-surface-variant/20 divide-dashed text-on-surface">
+                  {itemsPaginados.map((sesion) => (
+                    <tr
+                      key={sesion.id_sesion}
+                      className="hover:bg-surface-container/40 transition-colors"
+                    >
+                      <td className="py-2.5 px-4">
+                        <div className="font-bold text-on-surface">{sesion.mesa_nombre}</div>
+                        <div className="text-[10px] text-on-surface-variant font-mono tabular-nums">
+                          {formatearHora(sesion.fecha_inicio)} → {formatearHora(sesion.fecha_fin)}
+                        </div>
+                        {sesion.nota_cliente && (
+                          <div className="text-[10px] text-primary/80 truncate max-w-[180px]">
+                            Ref: {sesion.nota_cliente}
+                          </div>
+                        )}
+                      </td>
+
+                      <td className="py-2.5 px-4">
+                        <div className="font-mono tabular-nums font-semibold text-on-surface">
+                          {formatearDuracion(sesion.minutos_jugados)}
+                        </div>
+                        <div className="text-[10px] text-on-surface-variant font-mono tabular-nums">
+                          {Number(sesion.costo_tiempo || 0).toFixed(2)} Bs.
+                        </div>
+                      </td>
+
+                      <td className="py-2.5 px-4">
+                        <div className="font-mono tabular-nums font-semibold text-on-surface">
+                          {Number(sesion.costo_consumo || 0).toFixed(2)} Bs.
+                        </div>
+                        <div className="text-[10px] text-on-surface-variant">
+                          {Number(sesion.total_items) > 0
+                            ? `${sesion.total_items} ${sesion.total_items === 1 ? 'ítem' : 'ítems'}`
+                            : 'Sin consumos'}
+                        </div>
+                      </td>
+
+                      <td className="py-2.5 px-4 text-right">
+                        <div className="font-bold font-mono text-primary tabular-nums text-sm">
+                          {Number(sesion.total_pagar || 0).toFixed(2)}{' '}
+                          <span className="text-[10px] font-normal text-on-surface-variant">
+                            Bs.
+                          </span>
+                        </div>
+                        <div className="mt-0.5 inline-block">
+                          {sesion.metodo_pago === 'QR' ? (
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-secondary/15 text-secondary border border-secondary/30">
+                              <QrCode className="w-2.5 h-2.5" /> QR Simple
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-primary/15 text-primary border border-primary/30">
+                              <Banknote className="w-2.5 h-2.5" /> Efectivo
+                            </span>
+                          )}
+                        </div>
+                      </td>
+
+                      <td className="py-2.5 px-4 text-center">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setModalDetalle({
+                              isOpen: true,
+                              tipo: 'MESA',
+                              id: sesion.id_sesion
+                            })
+                          }
+                          className="p-1.5 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface border border-surface-variant/40 transition-colors cursor-pointer"
+                          title="Ver detalle completo"
+                        >
+                          <Eye className="w-4 h-4 text-primary" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              /* TABLA DE VENTAS EN BARRA */
+              <table className="w-full text-left text-xs">
+                <thead className="bg-surface-container text-on-surface-variant text-[10px] uppercase tracking-wider sticky top-0 z-10 border-b border-surface-variant/30">
+                  <tr>
+                    <th className="py-2.5 px-4 font-semibold">Venta / Fecha y Hora</th>
+                    <th className="py-2.5 px-4 font-semibold">Productos</th>
+                    <th className="py-2.5 px-4 font-semibold text-right">Total / Pago</th>
+                    <th className="py-2.5 px-4 font-semibold text-center">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-surface-variant/20 divide-dashed text-on-surface">
+                  {itemsPaginados.map((venta) => (
+                    <tr
+                      key={venta.id_venta}
+                      className="hover:bg-surface-container/40 transition-colors"
+                    >
+                      <td className="py-2.5 px-4">
+                        <div className="font-bold text-on-surface flex items-center gap-1.5">
+                          <span>#{venta.id_venta}</span>
+                          {venta.nota && (
+                            <span className="text-[11px] font-normal text-on-surface-variant truncate max-w-[200px]">
+                              • {venta.nota}
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-[10px] text-on-surface-variant font-mono tabular-nums">
+                          {formatearFechaHora(venta.fecha_hora)}
+                        </div>
+                      </td>
+
+                      <td className="py-2.5 px-4">
+                        <div className="font-mono tabular-nums font-semibold text-on-surface">
+                          {venta.total_items} {venta.total_items === 1 ? 'ítem' : 'ítems'}
+                        </div>
+                      </td>
+
+                      <td className="py-2.5 px-4 text-right">
+                        <div className="font-bold font-mono text-primary tabular-nums text-sm">
+                          {Number(venta.total || 0).toFixed(2)}{' '}
+                          <span className="text-[10px] font-normal text-on-surface-variant">
+                            Bs.
+                          </span>
+                        </div>
+                        <div className="mt-0.5 inline-block">
+                          {venta.metodo_pago === 'QR' ? (
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-secondary/15 text-secondary border border-secondary/30">
+                              <QrCode className="w-2.5 h-2.5" /> QR Simple
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-primary/15 text-primary border border-primary/30">
+                              <Banknote className="w-2.5 h-2.5" /> Efectivo
+                            </span>
+                          )}
+                        </div>
+                      </td>
+
+                      <td className="py-2.5 px-4 text-center">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setModalDetalle({
+                              isOpen: true,
+                              tipo: 'BARRA',
+                              id: venta.id_venta
+                            })
+                          }
+                          className="p-1.5 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface border border-surface-variant/40 transition-colors cursor-pointer"
+                          title="Ver detalle de venta"
+                        >
+                          <Eye className="w-4 h-4 text-primary" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+
+          {/* Pie de Paginación Integrado */}
+          <div className="bg-surface-container/70 p-2.5 px-4 flex items-center justify-between border-t border-surface-variant/30 text-xs shrink-0">
+            <div className="text-on-surface-variant text-[11px] tabular-nums">
+              Mostrando{' '}
+              <strong className="text-on-surface">
+                {listaFiltrada.length === 0 ? 0 : inicioIndex + 1}
+              </strong>{' '}
+              a{' '}
+              <strong className="text-on-surface">
+                {Math.min(listaFiltrada.length, inicioIndex + ITEMS_POR_PAGINA)}
+              </strong>{' '}
+              de <strong className="text-on-surface">{listaFiltrada.length}</strong> registros
+            </div>
+
+            {/* Stepper de páginas */}
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                disabled={paginaActual <= 1}
+                onClick={() => setPaginaActual((p) => Math.max(1, p - 1))}
+                className="p-1.5 rounded-lg bg-surface-container-high text-on-surface-variant hover:text-on-surface disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                title="Página anterior"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
+              </button>
+
+              <span className="px-2 py-0.5 rounded-md font-mono text-[11px] font-bold bg-primary text-on-primary">
+                {paginaActual} / {totalPaginas}
+              </span>
+
+              <button
+                type="button"
+                disabled={paginaActual >= totalPaginas}
+                onClick={() => setPaginaActual((p) => Math.min(totalPaginas, p + 1))}
+                className="p-1.5 rounded-lg bg-surface-container-high text-on-surface-variant hover:text-on-surface disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                title="Página siguiente"
+              >
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            {/* Subtotal Página */}
+            <div className="text-right text-[11px] font-mono tabular-nums">
+              <span className="text-on-surface-variant">Subtotal Página: </span>
+              <strong className="text-primary font-bold">{subtotalPagina.toFixed(2)} Bs.</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ============================================================== */}
+      {/* 2. COLUMNA DERECHA (25% -> lg:col-span-3): Resumen Contable    */}
+      {/* ============================================================== */}
+      <div className="lg:col-span-3 flex flex-col gap-3 min-h-0 overflow-y-auto">
+        {/* KPI 1: Tiempo en Mesas */}
+        <div className="bg-surface-container-low/95 border border-surface-variant/30 rounded-xl p-3.5 shadow-md flex flex-col justify-between flex-1">
           <div className="flex items-center justify-between mb-1">
             <span className="text-[11px] font-semibold uppercase tracking-wider text-on-surface-variant">
               Tiempo en Mesas
@@ -227,7 +573,7 @@ export default function Caja() {
               {Number(kpis?.ingresoTiempo || 0).toFixed(2)}{' '}
               <span className="text-xs font-normal text-on-surface-variant">Bs.</span>
             </div>
-            <div className="mt-1.5 space-y-1">
+            <div className="mt-2 space-y-1">
               <div className="w-full h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
                 <div
                   className="h-full bg-primary rounded-full transition-all duration-300"
@@ -241,8 +587,8 @@ export default function Caja() {
           </div>
         </div>
 
-        {/* KPI 3: Consumo Productos Mesas */}
-        <div className="bg-surface-container-low/95 border border-surface-variant/30 rounded-xl p-3 shadow-md flex flex-col justify-between">
+        {/* KPI 2: Consumo en Mesas */}
+        <div className="bg-surface-container-low/95 border border-surface-variant/30 rounded-xl p-3.5 shadow-md flex flex-col justify-between flex-1">
           <div className="flex items-center justify-between mb-1">
             <span className="text-[11px] font-semibold uppercase tracking-wider text-on-surface-variant">
               Consumo en Mesas
@@ -256,7 +602,7 @@ export default function Caja() {
               {Number(kpis?.ingresoConsumoMesas || 0).toFixed(2)}{' '}
               <span className="text-xs font-normal text-on-surface-variant">Bs.</span>
             </div>
-            <div className="mt-1.5 space-y-1">
+            <div className="mt-2 space-y-1">
               <div className="w-full h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
                 <div
                   className="h-full bg-tertiary rounded-full transition-all duration-300"
@@ -273,8 +619,8 @@ export default function Caja() {
           </div>
         </div>
 
-        {/* KPI 4: Total Ventas en Barra */}
-        <div className="bg-surface-container-low/95 border border-surface-variant/30 rounded-xl p-3 shadow-md flex flex-col justify-between">
+        {/* KPI 3: Ventas en Barra */}
+        <div className="bg-surface-container-low/95 border border-surface-variant/30 rounded-xl p-3.5 shadow-md flex flex-col justify-between flex-1">
           <div className="flex items-center justify-between mb-1">
             <span className="text-[11px] font-semibold uppercase tracking-wider text-on-surface-variant">
               Ventas en Barra
@@ -288,7 +634,7 @@ export default function Caja() {
               {Number(kpis?.ingresoBarra || 0).toFixed(2)}{' '}
               <span className="text-xs font-normal text-on-surface-variant">Bs.</span>
             </div>
-            <div className="mt-1.5 flex items-center justify-between text-[10px] text-on-surface-variant font-medium border-t border-surface-variant/20 pt-1 tabular-nums">
+            <div className="mt-2 flex items-center justify-between text-[10px] text-on-surface-variant font-medium border-t border-surface-variant/20 pt-1.5 tabular-nums">
               <span>{kpis?.cantidadVentasBarra || 0} ventas</span>
               <span className="text-surface-variant">•</span>
               <span>{kpis?.cantidadItemsBarra || 0} ítems</span>
@@ -297,377 +643,37 @@ export default function Caja() {
             </div>
           </div>
         </div>
-      </div>
 
-      {/* ============================================================== */}
-      {/* FILA 2: BARRA DE CONTROL (Filtros, Fechas, PDF)                */}
-      {/* ============================================================== */}
-      <div className="bg-surface-container-low/95 border border-surface-variant/30 rounded-xl p-3 flex flex-col md:flex-row items-center justify-between gap-3 shrink-0 shadow-md">
-        {/* Título y Tabs de Vista */}
-        <div className="flex items-center gap-4 w-full md:w-auto">
-          <h2 className="text-sm font-bold text-on-surface flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-primary" />
-            Reporte de Caja
-          </h2>
-
-          <div className="flex items-center gap-1 bg-surface-container p-1 rounded-lg border border-surface-variant/30">
-            <button
-              type="button"
-              onClick={() => handleCambiarTab('mesas')}
-              className={`px-3 py-1 rounded-md text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer ${
-                tabActivo === 'mesas'
-                  ? 'bg-primary text-on-primary font-bold shadow-sm shadow-primary/20'
-                  : 'text-on-surface-variant hover:text-on-surface'
-              }`}
-            >
-              <Layers className="w-3.5 h-3.5" />
-              Mesas ({sesiones.length})
-            </button>
-            <button
-              type="button"
-              onClick={() => handleCambiarTab('barra')}
-              className={`px-3 py-1 rounded-md text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer ${
-                tabActivo === 'barra'
-                  ? 'bg-primary text-on-primary font-bold shadow-sm shadow-primary/20'
-                  : 'text-on-surface-variant hover:text-on-surface'
-              }`}
-            >
-              <ShoppingBag className="w-3.5 h-3.5" />
-              Barra ({ventasBarra.length})
-            </button>
-          </div>
-        </div>
-
-        {/* Selectores de Fechas y Botón Exportar PDF */}
-        <div className="flex flex-wrap items-center gap-2 w-full md:w-auto justify-end">
-          <button
-            type="button"
-            onClick={handleHoy}
-            className="px-2.5 py-1.5 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface border border-surface-variant/40 text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
-            title="Ver movimientos del día actual"
-          >
-            <RotateCcw className="w-3 h-3 text-primary" />
-            Hoy
-          </button>
-
-          <div className="flex items-center gap-1.5 bg-surface-container border border-surface-variant/40 px-2.5 py-1 rounded-lg text-xs">
-            <span className="text-[10px] uppercase font-semibold text-on-surface-variant">
-              Desde:
+        {/* KPI 4: Total Recaudado (Destacada al final con borde esmeralda) */}
+        <div className="bg-surface-container-low/95 border border-primary/40 rounded-xl p-3.5 shadow-md shadow-primary/5 flex flex-col justify-between flex-1">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-on-surface-variant">
+              Total Recaudado
             </span>
-            <input
-              type="date"
-              value={inputFechaInicio}
-              onChange={(e) => {
-                setInputFechaInicio(e.target.value)
-                handleFiltrarFechas(e.target.value, inputFechaFin)
-              }}
-              className="bg-transparent text-on-surface text-xs focus:outline-none cursor-pointer"
-            />
-          </div>
-
-          <div className="flex items-center gap-1.5 bg-surface-container border border-surface-variant/40 px-2.5 py-1 rounded-lg text-xs">
-            <span className="text-[10px] uppercase font-semibold text-on-surface-variant">
-              Hasta:
-            </span>
-            <input
-              type="date"
-              value={inputFechaFin}
-              onChange={(e) => {
-                setInputFechaFin(e.target.value)
-                handleFiltrarFechas(inputFechaInicio, e.target.value)
-              }}
-              className="bg-transparent text-on-surface text-xs focus:outline-none cursor-pointer"
-            />
-          </div>
-
-          <button
-            type="button"
-            onClick={handleGenerarPdf}
-            disabled={loading}
-            className="px-3.5 py-1.5 rounded-lg bg-primary hover:bg-primary-container text-on-primary text-xs font-bold flex items-center gap-1.5 shadow-sm shadow-primary/20 transition-all cursor-pointer disabled:opacity-50"
-            title="Descargar reporte detallado en PDF"
-          >
-            <FileDown className="w-3.5 h-3.5" />
-            Generar Reporte PDF
-          </button>
-        </div>
-      </div>
-
-      {/* ============================================================== */}
-      {/* FILA 3: CONTENEDOR DE TABLA (Subfiltros, Lista y Paginación)    */}
-      {/* ============================================================== */}
-      <div className="bg-surface-container-low/95 border border-surface-variant/30 rounded-xl overflow-hidden shadow-md flex-1 flex flex-col min-h-0">
-        {/* Barra superior de la tabla: Subfiltros de Método de Pago */}
-        <div className="bg-surface-container/60 p-2.5 px-3 border-b border-surface-variant/30 flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-1.5 text-xs">
-            <span className="text-[10px] uppercase font-semibold text-on-surface-variant tracking-wider mr-1">
-              Método de Pago:
-            </span>
-            <button
-              type="button"
-              onClick={() => handleCambiarFiltroPago('TODOS')}
-              className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-colors cursor-pointer ${
-                filtroPago === 'TODOS'
-                  ? 'bg-primary text-on-primary font-bold shadow-xs'
-                  : 'bg-surface-container-high text-on-surface-variant hover:text-on-surface border border-surface-variant/30'
-              }`}
-            >
-              Todos ({contadoresPago.todos})
-            </button>
-            <button
-              type="button"
-              onClick={() => handleCambiarFiltroPago('EFECTIVO')}
-              className={`px-2.5 py-1 rounded-md text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer ${
-                filtroPago === 'EFECTIVO'
-                  ? 'bg-primary text-on-primary font-bold shadow-xs'
-                  : 'bg-surface-container-high text-on-surface-variant hover:text-on-surface border border-surface-variant/30'
-              }`}
-            >
-              <Banknote className="w-3.5 h-3.5" />
-              Efectivo ({contadoresPago.efectivo})
-            </button>
-            <button
-              type="button"
-              onClick={() => handleCambiarFiltroPago('QR')}
-              className={`px-2.5 py-1 rounded-md text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer ${
-                filtroPago === 'QR'
-                  ? 'bg-primary text-on-primary font-bold shadow-xs'
-                  : 'bg-surface-container-high text-on-surface-variant hover:text-on-surface border border-surface-variant/30'
-              }`}
-            >
-              <QrCode className="w-3.5 h-3.5" />
-              QR Simple ({contadoresPago.qr})
-            </button>
-          </div>
-
-          <div className="text-[11px] font-mono text-on-surface-variant tabular-nums">
-            Mostrando <strong className="text-on-surface">{listaFiltrada.length}</strong> registros
-          </div>
-        </div>
-
-        {/* Tabla con scroll interno */}
-        <div className="flex-1 overflow-y-auto min-h-0">
-          {loading ? (
-            <div className="flex flex-col items-center justify-center h-48 text-on-surface-variant text-xs">
-              <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mb-2" />
-              Cargando registros de caja...
+            <div className="p-1.5 rounded-lg bg-primary/10 text-primary border border-primary/20">
+              <Wallet className="w-4 h-4" />
             </div>
-          ) : itemsPaginados.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-48 text-on-surface-variant text-xs">
-              <Wallet className="w-8 h-8 opacity-40 mb-1" />
-              <p>No se encontraron registros para los filtros seleccionados.</p>
+          </div>
+          <div>
+            <div className="text-2xl font-black font-mono text-primary tabular-nums tracking-tight">
+              {Number(kpis?.totalRecaudado || 0).toFixed(2)}{' '}
+              <span className="text-xs font-normal text-on-surface-variant">Bs.</span>
             </div>
-          ) : tabActivo === 'mesas' ? (
-            /* TABLA DE SESIONES DE MESAS */
-            <table className="w-full text-left text-xs">
-              <thead className="bg-surface-container text-on-surface-variant text-[10px] uppercase tracking-wider sticky top-0 z-10 border-b border-surface-variant/30">
-                <tr>
-                  <th className="py-2.5 px-4 font-semibold">Mesa / Horario</th>
-                  <th className="py-2.5 px-4 font-semibold">Tiempo / Costo</th>
-                  <th className="py-2.5 px-4 font-semibold">Consumo</th>
-                  <th className="py-2.5 px-4 font-semibold text-right">Total / Pago</th>
-                  <th className="py-2.5 px-4 font-semibold text-center">Acciones</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-surface-variant/20 divide-dashed text-on-surface">
-                {itemsPaginados.map((sesion) => (
-                  <tr
-                    key={sesion.id_sesion}
-                    className="hover:bg-surface-container/40 transition-colors"
-                  >
-                    <td className="py-2.5 px-4">
-                      <div className="font-bold text-on-surface">{sesion.mesa_nombre}</div>
-                      <div className="text-[10px] text-on-surface-variant font-mono tabular-nums">
-                        {formatearHora(sesion.fecha_inicio)} → {formatearHora(sesion.fecha_fin)}
-                      </div>
-                      {sesion.nota_cliente && (
-                        <div className="text-[10px] text-primary/80 truncate max-w-[180px]">
-                          Ref: {sesion.nota_cliente}
-                        </div>
-                      )}
-                    </td>
-
-                    <td className="py-2.5 px-4">
-                      <div className="font-mono tabular-nums font-semibold text-on-surface">
-                        {formatearDuracion(sesion.minutos_jugados)}
-                      </div>
-                      <div className="text-[10px] text-on-surface-variant font-mono tabular-nums">
-                        {Number(sesion.costo_tiempo || 0).toFixed(2)} Bs.
-                      </div>
-                    </td>
-
-                    <td className="py-2.5 px-4">
-                      <div className="font-mono tabular-nums font-semibold text-on-surface">
-                        {Number(sesion.costo_consumo || 0).toFixed(2)} Bs.
-                      </div>
-                      <div className="text-[10px] text-on-surface-variant">
-                        {Number(sesion.total_items) > 0
-                          ? `${sesion.total_items} ${sesion.total_items === 1 ? 'ítem' : 'ítems'}`
-                          : 'Sin consumos'}
-                      </div>
-                    </td>
-
-                    <td className="py-2.5 px-4 text-right">
-                      <div className="font-bold font-mono text-primary tabular-nums text-sm">
-                        {Number(sesion.total_pagar || 0).toFixed(2)}{' '}
-                        <span className="text-[10px] font-normal text-on-surface-variant">Bs.</span>
-                      </div>
-                      <div className="mt-0.5 inline-block">
-                        {sesion.metodo_pago === 'QR' ? (
-                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-secondary/15 text-secondary border border-secondary/30">
-                            <QrCode className="w-2.5 h-2.5" /> QR Simple
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-primary/15 text-primary border border-primary/30">
-                            <Banknote className="w-2.5 h-2.5" /> Efectivo
-                          </span>
-                        )}
-                      </div>
-                    </td>
-
-                    <td className="py-2.5 px-4 text-center">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setModalDetalle({
-                            isOpen: true,
-                            tipo: 'MESA',
-                            id: sesion.id_sesion
-                          })
-                        }
-                        className="p-1.5 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface border border-surface-variant/40 transition-colors cursor-pointer"
-                        title="Ver detalle completo"
-                      >
-                        <Eye className="w-4 h-4 text-primary" />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            /* TABLA DE VENTAS EN BARRA */
-            <table className="w-full text-left text-xs">
-              <thead className="bg-surface-container text-on-surface-variant text-[10px] uppercase tracking-wider sticky top-0 z-10 border-b border-surface-variant/30">
-                <tr>
-                  <th className="py-2.5 px-4 font-semibold">Venta / Fecha y Hora</th>
-                  <th className="py-2.5 px-4 font-semibold">Productos</th>
-                  <th className="py-2.5 px-4 font-semibold text-right">Total / Pago</th>
-                  <th className="py-2.5 px-4 font-semibold text-center">Acciones</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-surface-variant/20 divide-dashed text-on-surface">
-                {itemsPaginados.map((venta) => (
-                  <tr
-                    key={venta.id_venta}
-                    className="hover:bg-surface-container/40 transition-colors"
-                  >
-                    <td className="py-2.5 px-4">
-                      <div className="font-bold text-on-surface flex items-center gap-1.5">
-                        <span>#{venta.id_venta}</span>
-                        {venta.nota && (
-                          <span className="text-[11px] font-normal text-on-surface-variant truncate max-w-[200px]">
-                            • {venta.nota}
-                          </span>
-                        )}
-                      </div>
-                      <div className="text-[10px] text-on-surface-variant font-mono tabular-nums">
-                        {formatearFechaHora(venta.fecha_hora)}
-                      </div>
-                    </td>
-
-                    <td className="py-2.5 px-4">
-                      <div className="font-mono tabular-nums font-semibold text-on-surface">
-                        {venta.total_items} {venta.total_items === 1 ? 'ítem' : 'ítems'}
-                      </div>
-                    </td>
-
-                    <td className="py-2.5 px-4 text-right">
-                      <div className="font-bold font-mono text-primary tabular-nums text-sm">
-                        {Number(venta.total || 0).toFixed(2)}{' '}
-                        <span className="text-[10px] font-normal text-on-surface-variant">Bs.</span>
-                      </div>
-                      <div className="mt-0.5 inline-block">
-                        {venta.metodo_pago === 'QR' ? (
-                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-secondary/15 text-secondary border border-secondary/30">
-                            <QrCode className="w-2.5 h-2.5" /> QR Simple
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-primary/15 text-primary border border-primary/30">
-                            <Banknote className="w-2.5 h-2.5" /> Efectivo
-                          </span>
-                        )}
-                      </div>
-                    </td>
-
-                    <td className="py-2.5 px-4 text-center">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setModalDetalle({
-                            isOpen: true,
-                            tipo: 'BARRA',
-                            id: venta.id_venta
-                          })
-                        }
-                        className="p-1.5 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface border border-surface-variant/40 transition-colors cursor-pointer"
-                        title="Ver detalle de venta"
-                      >
-                        <Eye className="w-4 h-4 text-primary" />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
-
-        {/* Pie de Paginación Integrado */}
-        <div className="bg-surface-container/70 p-2.5 px-4 flex items-center justify-between border-t border-surface-variant/30 text-xs shrink-0">
-          <div className="text-on-surface-variant text-[11px] tabular-nums">
-            Mostrando{' '}
-            <strong className="text-on-surface">
-              {listaFiltrada.length === 0 ? 0 : inicioIndex + 1}
-            </strong>{' '}
-            a{' '}
-            <strong className="text-on-surface">
-              {Math.min(listaFiltrada.length, inicioIndex + ITEMS_POR_PAGINA)}
-            </strong>{' '}
-            de <strong className="text-on-surface">{listaFiltrada.length}</strong> registros
-          </div>
-
-          {/* Stepper de páginas */}
-          <div className="flex items-center gap-1">
-            <button
-              type="button"
-              disabled={paginaActual <= 1}
-              onClick={() => setPaginaActual((p) => Math.max(1, p - 1))}
-              className="p-1.5 rounded-lg bg-surface-container-high text-on-surface-variant hover:text-on-surface disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
-              title="Página anterior"
-            >
-              <ChevronLeft className="w-3.5 h-3.5" />
-            </button>
-
-            <span className="px-2 py-0.5 rounded-md font-mono text-[11px] font-bold bg-primary text-on-primary">
-              {paginaActual} / {totalPaginas}
-            </span>
-
-            <button
-              type="button"
-              disabled={paginaActual >= totalPaginas}
-              onClick={() => setPaginaActual((p) => Math.min(totalPaginas, p + 1))}
-              className="p-1.5 rounded-lg bg-surface-container-high text-on-surface-variant hover:text-on-surface disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
-              title="Página siguiente"
-            >
-              <ChevronRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
-
-          {/* Subtotal Página */}
-          <div className="text-right text-[11px] font-mono tabular-nums">
-            <span className="text-on-surface-variant">Subtotal Página: </span>
-            <strong className="text-primary font-bold">{subtotalPagina.toFixed(2)} Bs.</strong>
+            <div className="mt-2 flex items-center justify-between text-[11px] text-on-surface-variant font-mono tabular-nums border-t border-surface-variant/20 pt-1.5">
+              <span>
+                Efvo:{' '}
+                <strong className="text-on-surface">
+                  {Number(kpis?.totalEfectivo || 0).toFixed(2)} Bs.
+                </strong>
+              </span>
+              <span className="text-surface-variant">•</span>
+              <span>
+                QR:{' '}
+                <strong className="text-secondary">
+                  {Number(kpis?.totalQr || 0).toFixed(2)} Bs.
+                </strong>
+              </span>
+            </div>
           </div>
         </div>
       </div>

@@ -38,7 +38,12 @@ export function getReporteCaja({ fechaInicio, fechaFin } = {}) {
     JOIN mesas m ON s.id_mesa = m.id_mesa
     LEFT JOIN detalle_consumo dc ON s.id_sesion = dc.id_sesion
     WHERE s.estado = 'FINALIZADA'
-      AND date(s.fecha_fin, 'localtime') BETWEEN ? AND ?
+      AND (
+        CASE
+          WHEN s.fecha_fin LIKE '%Z' THEN date(s.fecha_fin, 'localtime')
+          ELSE date(s.fecha_fin)
+        END
+      ) BETWEEN ? AND ?
     GROUP BY s.id_sesion
     ORDER BY s.fecha_fin DESC
   `)
@@ -55,7 +60,12 @@ export function getReporteCaja({ fechaInicio, fechaFin } = {}) {
       COALESCE(SUM(dvd.cantidad), 0) AS total_items
     FROM ventas_directas vd
     LEFT JOIN detalle_venta_directa dvd ON vd.id_venta = dvd.id_venta
-    WHERE date(vd.fecha_hora, 'localtime') BETWEEN ? AND ?
+    WHERE (
+      CASE
+        WHEN vd.fecha_hora LIKE '%Z' THEN date(vd.fecha_hora, 'localtime')
+        ELSE date(vd.fecha_hora)
+      END
+    ) BETWEEN ? AND ?
     GROUP BY vd.id_venta
     ORDER BY vd.fecha_hora DESC
   `)
