@@ -21,6 +21,8 @@
     "@electron-toolkit/preload": "^3.0.2",
     "@electron-toolkit/utils": "^4.0.0",
     "better-sqlite3": "^13.2.0",
+    "jspdf": "^4.2.1",
+    "jspdf-autotable": "^5.0.9",
     "lucide-react": "^1.77.0",
     "sweetalert2": "^11.26.25",
     "zustand": "^5.1.0"
