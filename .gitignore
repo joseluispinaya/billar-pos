@@ -4,3 +4,28 @@ out
 .DS_Store
 .eslintcache
 *.log*
+# Archivos de entorno y secretos locales
+.env
+.env.*
+
+# Bases de datos locales y licencias de prueba
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+license.key
+
+# Logs y temporales de Windows
+*.log
+npm-debug.log*
+Thumbs.db
+
+# Referencias de diseño pesadas (opcional: descomenta si no quieres subir los mockups de Stitch)
+# design-refs/
+
+# Configuración local de VS Code (opcional)
+.vscode/
+
+# Script generador de claves (recomendado ignorar si el repo llegara a compartirse)
+scripts/generar-licencia.mjs
