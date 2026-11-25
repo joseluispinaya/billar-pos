@@ -28,4 +28,4 @@ Thumbs.db
 .vscode/
 
 # Script generador de claves (recomendado ignorar si el repo llegara a compartirse)
-scripts/generar-licencia.mjs
+scripts/
