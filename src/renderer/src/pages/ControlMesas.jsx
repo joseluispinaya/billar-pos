@@ -17,6 +17,7 @@ import CambiarMesaModal from '../components/CambiarMesaModal'
 import { formatearCronometro, calcularCostoTiempo } from '../utils/tiempo'
 import { toastSuccess, toastError, confirmarAccion } from '../utils/alertas'
 
+// se debe mejorar el diseño de las mesas
 export default function ControlMesas() {
   const {
     mesas,
@@ -267,11 +268,10 @@ export default function ControlMesas() {
                             </div>
                           ) : (
                             <span
-                              className={`text-xs tracking-wider uppercase ${
-                                estaOcupada
+                              className={`text-xs tracking-wider uppercase ${estaOcupada
                                   ? 'font-bold text-on-surface'
                                   : 'font-semibold text-on-surface-variant'
-                              }`}
+                                }`}
                             >
                               {mesa.nombre}
                             </span>
@@ -370,11 +370,10 @@ export default function ControlMesas() {
                                 e.stopPropagation()
                                 seleccionarMesa(mesa.id_mesa)
                               }}
-                              className={`w-full py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1 ${
-                                esSeleccionada
+                              className={`w-full py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1 ${esSeleccionada
                                   ? 'bg-primary text-on-primary shadow-sm shadow-primary/20'
                                   : 'bg-surface-container-high hover:bg-surface-variant text-on-surface border border-surface-variant/40'
-                              }`}
+                                }`}
                             >
                               <span>{esSeleccionada ? 'En Panel →' : 'Detalle'}</span>
                             </button>
@@ -405,8 +404,8 @@ export default function ControlMesas() {
         {/* ============================================================== */}
         <div className="col-span-3 bg-surface-container-low/95 border border-surface-variant/30 rounded-xl p-3.5 flex flex-col justify-between overflow-hidden shadow-xl h-full min-h-0">
           {!mesaSeleccionada ||
-          mesaSeleccionada.estado !== 'OCUPADA' ||
-          !mesaSeleccionada.sesion ? (
+            mesaSeleccionada.estado !== 'OCUPADA' ||
+            !mesaSeleccionada.sesion ? (
             /* Estado vacío cuando no hay mesa ocupada seleccionada */
             <div className="flex flex-col items-center justify-center h-full text-center p-6 space-y-3">
               <div className="w-12 h-12 rounded-2xl bg-surface-container border border-surface-variant/30 flex items-center justify-center text-on-surface-variant/60 shadow-inner">
@@ -502,7 +501,7 @@ export default function ControlMesas() {
                   {/* Lista con scroll interno */}
                   <div className="flex-1 overflow-y-auto space-y-1.5 pr-1 min-h-22.5 max-h-40">
                     {!mesaSeleccionada.sesion.consumos ||
-                    mesaSeleccionada.sesion.consumos.length === 0 ? (
+                      mesaSeleccionada.sesion.consumos.length === 0 ? (
                       <div className="flex items-center justify-center h-full text-center text-on-surface-variant/60 text-xs py-4">
                         Sin consumos cargados todavía.
                       </div>
@@ -595,11 +594,10 @@ export default function ControlMesas() {
                   <button
                     type="button"
                     onClick={() => setMetodoPago('EFECTIVO')}
-                    className={`py-1.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-                      metodoPago === 'EFECTIVO'
+                    className={`py-1.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${metodoPago === 'EFECTIVO'
                         ? 'bg-primary text-on-primary shadow-sm shadow-primary/20'
                         : 'bg-surface-container border border-surface-variant/40 text-on-surface-variant hover:text-on-surface'
-                    }`}
+                      }`}
                   >
                     <Banknote className="w-3.5 h-3.5" />
                     <span>Efectivo</span>
@@ -608,11 +606,10 @@ export default function ControlMesas() {
                   <button
                     type="button"
                     onClick={() => setMetodoPago('QR')}
-                    className={`py-1.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-                      metodoPago === 'QR'
+                    className={`py-1.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${metodoPago === 'QR'
                         ? 'bg-primary text-on-primary shadow-sm shadow-primary/20'
                         : 'bg-surface-container border border-surface-variant/40 text-on-surface-variant hover:text-on-surface'
-                    }`}
+                      }`}
                   >
                     <QrCode className="w-3.5 h-3.5" />
                     <span>QR Simple</span>
