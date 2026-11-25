@@ -12,11 +12,14 @@ import { registerCajaHandlers } from './ipc/cajaHandlers'
 function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+    width: 1280,
+    height: 760,
+    minWidth: 1024,
+    minHeight: 680,
+    title: 'Billar POS',
     show: false,
     autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? { icon } : {}),
+    icon,
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
@@ -24,6 +27,10 @@ function createWindow() {
   })
 
   mainWindow.on('ready-to-show', () => {
+    if (!is.dev) {
+      mainWindow.setMenu(null)
+    }
+    mainWindow.maximize()
     mainWindow.show()
   })
 
@@ -46,7 +53,7 @@ function createWindow() {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   // Set app user model id for windows
-  electronApp.setAppUserModelId('com.electron')
+  electronApp.setAppUserModelId('com.zerobyte.billarpos')
 
   initDatabase()
   registerAjustesHandlers()
