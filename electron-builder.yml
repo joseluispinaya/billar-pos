@@ -5,6 +5,7 @@ directories:
 files:
   - '!**/.vscode/*'
   - '!src/*'
+  - '!scripts/*'
   - '!design-refs/*'
   - '!*.md'
   - '!electron.vite.config.{js,ts,mjs,cjs}'

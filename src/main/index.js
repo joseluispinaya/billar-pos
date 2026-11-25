@@ -8,6 +8,7 @@ import { registerProductosHandlers } from './ipc/productosHandlers'
 import { registerMesasHandlers } from './ipc/mesasHandlers'
 import { registerVentasHandlers } from './ipc/ventasHandlers'
 import { registerCajaHandlers } from './ipc/cajaHandlers'
+import { registerLicenciaHandlers } from './ipc/licenciaHandlers'
 
 function createWindow() {
   // Create the browser window.
@@ -61,6 +62,7 @@ app.whenReady().then(() => {
   registerMesasHandlers()
   registerVentasHandlers()
   registerCajaHandlers()
+  registerLicenciaHandlers()
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.

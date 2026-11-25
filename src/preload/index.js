@@ -36,6 +36,10 @@ const api = {
     getReporte: (params) => ipcRenderer.invoke('caja:getReporte', params),
     getDetalleSesion: (idSesion) => ipcRenderer.invoke('caja:getDetalleSesion', idSesion),
     getDetalleVentaBarra: (idVenta) => ipcRenderer.invoke('caja:getDetalleVentaBarra', idVenta)
+  },
+  licencia: {
+    verificar: () => ipcRenderer.invoke('licencia:verificar'),
+    activar: (clave) => ipcRenderer.invoke('licencia:activar', clave)
   }
 }
 
