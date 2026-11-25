@@ -4,7 +4,8 @@ import {
   iniciarSesion,
   agregarConsumos,
   actualizarCantidadConsumo,
-  finalizarSesion
+  finalizarSesion,
+  cambiarMesa
 } from '../db/queries/mesas'
 
 export function registerMesasHandlers() {
@@ -47,6 +48,15 @@ export function registerMesasHandlers() {
   ipcMain.handle('mesas:finalizar', async (_event, idSesion, metodoPago) => {
     try {
       const data = finalizarSesion(idSesion, metodoPago)
+      return { statusResponse: true, error: null, data }
+    } catch (error) {
+      return { statusResponse: false, error: error.message, data: null }
+    }
+  })
+
+  ipcMain.handle('mesas:cambiarMesa', async (_event, idSesion, idMesaDestino) => {
+    try {
+      const data = cambiarMesa(idSesion, idMesaDestino)
       return { statusResponse: true, error: null, data }
     } catch (error) {
       return { statusResponse: false, error: error.message, data: null }

@@ -52,7 +52,8 @@ export function calcularCostoTiempo(
   }
 
   const tarifaPorMinuto = (Number(tarifaHora) || 25.0) / 60
-  const costoTiempo = Number((minutosCobrables * tarifaPorMinuto).toFixed(2))
+  const costoBruto = minutosCobrables * tarifaPorMinuto
+  const costoTiempo = Number((Math.ceil(costoBruto * 2) / 2).toFixed(2))
 
   return {
     ms,

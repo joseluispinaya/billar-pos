@@ -23,7 +23,10 @@ const api = {
       ipcRenderer.invoke('mesas:agregarConsumos', idSesion, items),
     actualizarConsumo: (idDetalle, delta) =>
       ipcRenderer.invoke('mesas:actualizarConsumo', idDetalle, delta),
-    finalizar: (idSesion, metodoPago) => ipcRenderer.invoke('mesas:finalizar', idSesion, metodoPago)
+    finalizar: (idSesion, metodoPago) =>
+      ipcRenderer.invoke('mesas:finalizar', idSesion, metodoPago),
+    cambiarMesa: (idSesion, idMesaDestino) =>
+      ipcRenderer.invoke('mesas:cambiarMesa', idSesion, idMesaDestino)
   },
   ventas: {
     registrar: (data) => ipcRenderer.invoke('ventas:registrar', data),

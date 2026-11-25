@@ -132,5 +132,18 @@ export const useMesasStore = create((set, get) => ({
       set({ error: err.message, loading: false })
       throw err
     }
+  },
+
+  cambiarMesa: async (idSesion, idMesaDestino) => {
+    set({ loading: true, error: null })
+    try {
+      const result = await mesasService.cambiarMesa(idSesion, idMesaDestino)
+      await get().fetchMesas()
+      set({ mesaSeleccionadaId: idMesaDestino, loading: false })
+      return result
+    } catch (err) {
+      set({ error: err.message, loading: false })
+      throw err
+    }
   }
 }))

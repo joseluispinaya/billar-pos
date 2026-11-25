@@ -6,7 +6,7 @@ import { useMesasStore } from '../store/useMesasStore'
 import { toastSuccess, toastError } from '../utils/alertas'
 
 function AgregarConsumoContent({ mesa, onClose }) {
-  const { productos, categorias, fetchProductos } = useProductosStore()
+  const { productos, categorias, fetchProductos, fetchCategorias } = useProductosStore()
   const { agregarConsumos } = useMesasStore()
 
   const [busqueda, setBusqueda] = useState('')
@@ -16,7 +16,8 @@ function AgregarConsumoContent({ mesa, onClose }) {
 
   useEffect(() => {
     fetchProductos?.().catch(() => {})
-  }, [fetchProductos])
+    fetchCategorias?.().catch(() => {})
+  }, [fetchProductos, fetchCategorias])
 
   // Filtrado de productos disponibles
   const productosFiltrados = useMemo(() => {
@@ -166,10 +167,10 @@ function AgregarConsumoContent({ mesa, onClose }) {
           </div>
         </div>
 
-        {/* Grilla compacta de productos (2 columnas, p-2.5) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-95 overflow-y-auto pr-1">
+        {/* Grilla compacta de productos (3 columnas, p-2) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 max-h-100 overflow-y-auto pr-1">
           {productosFiltrados.length === 0 ? (
-            <div className="col-span-2 py-8 text-center text-on-surface-variant text-xs">
+            <div className="col-span-1 sm:col-span-2 lg:col-span-3 py-8 text-center text-on-surface-variant text-xs">
               <Package className="w-6 h-6 mx-auto mb-1 opacity-60" />
               No se encontraron productos disponibles.
             </div>
@@ -183,7 +184,7 @@ function AgregarConsumoContent({ mesa, onClose }) {
               return (
                 <div
                   key={prod.id_producto}
-                  className={`p-2.5 rounded-xl border transition-all flex flex-col justify-between ${
+                  className={`p-2 rounded-lg border transition-all flex flex-col justify-between ${
                     cantEnBorrador > 0
                       ? 'bg-primary/5 border-primary/40 ring-1 ring-primary/30'
                       : estaAgotado
@@ -191,12 +192,12 @@ function AgregarConsumoContent({ mesa, onClose }) {
                         : 'bg-surface-container-high border-surface-variant/30 hover:border-surface-variant/60'
                   }`}
                 >
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="min-w-0">
-                      <span className="text-[10px] font-semibold text-on-surface-variant uppercase tracking-wider block truncate">
-                        {prod.categoria_nombre || 'General'}
-                      </span>
-                      <h4 className="text-xs font-bold text-on-surface leading-tight truncate">
+                  <div className="flex items-start justify-between gap-1.5">
+                    <div className="min-w-0 flex-1">
+                      <h4
+                        className="text-xs font-bold text-on-surface leading-tight truncate"
+                        title={prod.nombre}
+                      >
                         {prod.nombre}
                       </h4>
                       <span
@@ -213,47 +214,49 @@ function AgregarConsumoContent({ mesa, onClose }) {
                     </div>
 
                     <div className="text-right shrink-0">
-                      <span className="text-xs font-bold font-mono text-primary tabular-nums">
+                      <span className="text-xs font-bold font-mono text-primary tabular-nums block">
                         {precio.toFixed(2)}{' '}
                         <span className="text-[10px] font-normal text-on-surface-variant">Bs.</span>
                       </span>
                     </div>
                   </div>
 
-                  {/* Botón o Stepper de selección */}
-                  <div className="mt-2.5 flex items-center justify-end">
+                  {/* Botón o Stepper de selección compacto */}
+                  <div className="mt-1.5 flex items-center justify-end">
                     {estaAgotado ? (
-                      <span className="text-[10px] text-error font-medium px-2 py-0.5 rounded bg-error-container/20 border border-error/30">
+                      <span className="text-[9px] text-error font-medium px-1.5 py-0.5 rounded bg-error-container/20 border border-error/30">
                         Sin existencias
                       </span>
                     ) : cantEnBorrador > 0 ? (
-                      <div className="flex items-center gap-1.5 bg-surface-container p-0.5 rounded-lg border border-primary/30">
+                      <div className="flex items-center gap-1 bg-surface-container p-0.5 rounded-md border border-primary/30">
                         <button
                           type="button"
                           onClick={() => handleCambiarCantidad(prod.id_producto, -1)}
-                          className="w-6 h-6 rounded bg-surface-container-high hover:bg-surface-bright text-on-surface flex items-center justify-center transition-colors cursor-pointer"
+                          className="w-5 h-5 rounded bg-surface-container-high hover:bg-surface-bright text-on-surface flex items-center justify-center transition-colors cursor-pointer"
+                          title="Disminuir"
                         >
-                          <Minus className="w-3 h-3" />
+                          <Minus className="w-2.5 h-2.5" />
                         </button>
-                        <span className="w-7 text-center font-bold text-xs font-mono text-primary tabular-nums">
+                        <span className="w-6 text-center font-bold text-xs font-mono text-primary tabular-nums">
                           {cantEnBorrador}
                         </span>
                         <button
                           type="button"
                           onClick={() => handleCambiarCantidad(prod.id_producto, 1)}
                           disabled={cantEnBorrador >= stock}
-                          className="w-6 h-6 rounded bg-surface-container-high hover:bg-surface-bright disabled:opacity-40 text-on-surface flex items-center justify-center transition-colors cursor-pointer"
+                          className="w-5 h-5 rounded bg-surface-container-high hover:bg-surface-bright disabled:opacity-40 text-on-surface flex items-center justify-center transition-colors cursor-pointer"
+                          title="Aumentar"
                         >
-                          <Plus className="w-3 h-3" />
+                          <Plus className="w-2.5 h-2.5" />
                         </button>
                       </div>
                     ) : (
                       <button
                         type="button"
                         onClick={() => handleCambiarCantidad(prod.id_producto, 1)}
-                        className="px-2.5 py-1 rounded-md text-[11px] font-bold bg-surface-container hover:bg-primary hover:text-on-primary text-primary border border-primary/30 transition-all cursor-pointer flex items-center gap-1"
+                        className="px-2 py-0.5 rounded text-[10px] font-bold bg-surface-container hover:bg-primary hover:text-on-primary text-primary border border-primary/30 transition-all cursor-pointer flex items-center gap-0.5"
                       >
-                        <Plus className="w-3 h-3" />
+                        <Plus className="w-2.5 h-2.5" />
                         <span>Agregar</span>
                       </button>
                     )}
@@ -374,7 +377,7 @@ export default function AgregarConsumoModal({ isOpen, onClose, mesa }) {
       subtitle="Selecciona productos del inventario para cargar a la cuenta de la mesa"
       badge="OCUPADA"
       icon={ShoppingCart}
-      maxWidth="max-w-4xl"
+      maxWidth="max-w-5xl"
     >
       <AgregarConsumoContent
         key={mesa.sesion?.id_sesion ? String(mesa.sesion.id_sesion) : String(mesa.id_mesa)}

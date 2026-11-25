@@ -37,5 +37,13 @@ export const mesasService = {
       throw new Error(res?.error || 'Error al finalizar y cobrar la sesión')
     }
     return res.data
+  },
+
+  async cambiarMesa(idSesion, idMesaDestino) {
+    const res = await window.api.mesas.cambiarMesa(idSesion, idMesaDestino)
+    if (!res || !res.statusResponse) {
+      throw new Error(res?.error || 'Error al cambiar de mesa')
+    }
+    return res.data
   }
 }

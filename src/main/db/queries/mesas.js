@@ -392,7 +392,8 @@ export function finalizarSesion(id_sesion, metodo_pago) {
 
     const tarifaHora = Number(sesion.tarifa_hora_aplicada) || 25.0
     const tarifaMinuto = tarifaHora / 60
-    const costoTiempo = Number((minutosCobrables * tarifaMinuto).toFixed(2))
+    const costoBruto = minutosCobrables * tarifaMinuto
+    const costoTiempo = Number((Math.ceil(costoBruto * 2) / 2).toFixed(2))
 
     // 4. Calcular costo de consumo real
     const totalConsumoRow = db
@@ -438,6 +439,51 @@ export function finalizarSesion(id_sesion, metodo_pago) {
       metodo_pago: metodo,
       fecha_fin: fechaFin,
       estado: 'FINALIZADA'
+    }
+  })
+
+  return transaction()
+}
+
+export function cambiarMesa(id_sesion, id_mesa_destino) {
+  const db = getDatabase()
+  const idSesion = Number(id_sesion)
+  const idMesaDestino = Number(id_mesa_destino)
+
+  const transaction = db.transaction(() => {
+    // 1. Validar que la sesión exista y esté ACTIVA
+    const sesion = db
+      .prepare("SELECT * FROM sesiones WHERE id_sesion = ? AND estado = 'ACTIVA'")
+      .get(idSesion)
+    if (!sesion) {
+      throw new Error('La sesión no existe o no se encuentra activa.')
+    }
+
+    // 2. Validar que la mesa destino exista, esté activa y LIBRE
+    const mesaDestino = db
+      .prepare('SELECT * FROM mesas WHERE id_mesa = ? AND activo = 1')
+      .get(idMesaDestino)
+    if (!mesaDestino) {
+      throw new Error('La mesa destino no existe o está desactivada.')
+    }
+    if (mesaDestino.estado !== 'LIBRE') {
+      throw new Error(`La ${mesaDestino.nombre} ya se encuentra ocupada.`)
+    }
+
+    const idMesaOrigen = sesion.id_mesa
+
+    // 3. Actualizar id_mesa en la sesión
+    db.prepare('UPDATE sesiones SET id_mesa = ? WHERE id_sesion = ?').run(idMesaDestino, idSesion)
+
+    // 4. Liberar mesa origen y ocupar mesa destino
+    db.prepare("UPDATE mesas SET estado = 'LIBRE' WHERE id_mesa = ?").run(idMesaOrigen)
+    db.prepare("UPDATE mesas SET estado = 'OCUPADA' WHERE id_mesa = ?").run(idMesaDestino)
+
+    return {
+      id_sesion: idSesion,
+      id_mesa_origen: idMesaOrigen,
+      id_mesa_destino: idMesaDestino,
+      mesa_destino_nombre: mesaDestino.nombre
     }
   })
 
