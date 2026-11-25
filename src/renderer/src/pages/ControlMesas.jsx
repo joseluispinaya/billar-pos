@@ -201,6 +201,27 @@ export default function ControlMesas() {
 
                   const cantidadConsumos = mesa.sesion?.consumos?.length || 0
 
+                  let marcoClasses
+                  let panoClasses
+                  let troneraClasses
+
+                  if (esSeleccionada) {
+                    marcoClasses =
+                      'bg-surface-container-high ring-1 ring-primary/60 shadow-[0_0_20px_-3px_rgba(78,222,163,0.4)] cursor-pointer'
+                    panoClasses = 'bg-surface-container-lowest'
+                    troneraClasses = 'bg-primary/40 shadow-inner'
+                  } else if (estaOcupada) {
+                    marcoClasses =
+                      'bg-surface-container border border-surface-variant/30 shadow-md hover:border-primary/40 hover:shadow-primary/10 cursor-pointer'
+                    panoClasses = 'bg-surface-container-lowest'
+                    troneraClasses = 'bg-surface-dim shadow-inner'
+                  } else {
+                    marcoClasses =
+                      'bg-surface-container-low border border-surface-variant/15 opacity-80 hover:opacity-100'
+                    panoClasses = 'bg-surface-container-lowest/80'
+                    troneraClasses = 'bg-surface-dim'
+                  }
+
                   return (
                     <div
                       key={mesa.id_mesa}
@@ -209,116 +230,167 @@ export default function ControlMesas() {
                           seleccionarMesa(mesa.id_mesa)
                         }
                       }}
-                      className={`relative bg-surface-container-low/95 rounded-xl border p-3 flex flex-col justify-between transition-all duration-200 select-none ${estaOcupada ? 'cursor-pointer' : ''
-                        } ${esSeleccionada
-                          ? 'border-primary ring-1 ring-primary/60 shadow-[0_0_20px_-3px_rgba(78,222,163,0.35)] bg-surface-container'
-                          : estaOcupada
-                            ? 'border-surface-variant/40 hover:border-primary/50'
-                            : 'border-surface-variant/30 hover:border-surface-variant/50'
-                        }`}
+                      className={`group relative rounded-xl p-2 flex flex-col justify-between transition-all duration-200 select-none ${marcoClasses}`}
                     >
-                      {/* Troneras decorativas (6 puntos en el paño) */}
-                      <span className="absolute top-1.5 left-1.5 w-2 h-2 rounded-full bg-surface-container-highest border border-surface-variant/70 shadow-inner"></span>
-                      <span className="absolute top-1.5 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-surface-container-highest border border-surface-variant/70 shadow-inner"></span>
-                      <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-surface-container-highest border border-surface-variant/70 shadow-inner"></span>
-                      <span className="absolute bottom-1.5 left-1.5 w-2 h-2 rounded-full bg-surface-container-highest border border-surface-variant/70 shadow-inner"></span>
-                      <span className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-surface-container-highest border border-surface-variant/70 shadow-inner"></span>
-                      <span className="absolute bottom-1.5 right-1.5 w-2 h-2 rounded-full bg-surface-container-highest border border-surface-variant/70 shadow-inner"></span>
+                      {/* Paño Interior */}
+                      <div
+                        className={`relative w-full h-full rounded-lg p-2.5 flex flex-col justify-between overflow-hidden ${panoClasses}`}
+                      >
+                        {/* Troneras decorativas (6 troneras en el paño) */}
+                        <span
+                          className={`absolute top-0 left-0 w-3 h-3 rounded-br-full ${troneraClasses}`}
+                        ></span>
+                        <span
+                          className={`absolute top-0 left-1/2 -translate-x-1/2 w-3 h-2.5 rounded-b-full ${troneraClasses}`}
+                        ></span>
+                        <span
+                          className={`absolute top-0 right-0 w-3 h-3 rounded-bl-full ${troneraClasses}`}
+                        ></span>
+                        <span
+                          className={`absolute bottom-0 left-0 w-3 h-3 rounded-tr-full ${troneraClasses}`}
+                        ></span>
+                        <span
+                          className={`absolute bottom-0 left-1/2 -translate-x-1/2 w-3 h-2.5 rounded-t-full ${troneraClasses}`}
+                        ></span>
+                        <span
+                          className={`absolute bottom-0 right-0 w-3 h-3 rounded-tl-full ${troneraClasses}`}
+                        ></span>
 
-                      {/* Cabecera de la tarjeta */}
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs font-black text-on-surface tracking-wider uppercase">
-                          {mesa.nombre}
-                        </span>
-
-                        <div className="flex items-center gap-1">
-                          {esSeleccionada && (
-                            <span className="bg-primary text-on-primary text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-wider">
-                              ACTUAL
+                        {/* Cabecera de la tarjeta */}
+                        <div className="relative z-10 flex items-center justify-between mb-2">
+                          {esSeleccionada ? (
+                            <div className="flex items-center gap-1.5">
+                              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                              <span className="text-xs font-bold text-primary tracking-wider uppercase">
+                                {mesa.nombre}
+                              </span>
+                            </div>
+                          ) : (
+                            <span
+                              className={`text-xs tracking-wider uppercase ${
+                                estaOcupada
+                                  ? 'font-bold text-on-surface'
+                                  : 'font-semibold text-on-surface-variant'
+                              }`}
+                            >
+                              {mesa.nombre}
                             </span>
                           )}
 
-                          {estaOcupada ? (
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary/20 text-primary border border-primary/30 flex items-center gap-1">
-                              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
-                              OCUPADA
-                            </span>
+                          <div className="flex items-center gap-1">
+                            {esSeleccionada ? (
+                              <span className="bg-primary text-on-primary font-bold uppercase tracking-wider text-[9px] px-1.5 py-0.5 rounded shadow-sm">
+                                ACTUAL
+                              </span>
+                            ) : estaOcupada ? (
+                              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary/20 text-primary border border-primary/30 flex items-center gap-1">
+                                <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                                OCUPADA
+                              </span>
+                            ) : (
+                              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-surface-container-high text-on-surface-variant border border-surface-variant/20">
+                                DISPONIBLE
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Cuerpo central de la mesa */}
+                        <div className="relative z-10 my-auto py-1 flex flex-col items-center justify-center text-center">
+                          {estaOcupada && tiempoMesa ? (
+                            esSeleccionada ? (
+                              <div className="w-full py-1.5 px-2 bg-primary/10 rounded-lg border border-primary/20 space-y-1">
+                                {/* Cronómetro en vivo */}
+                                <div className="flex items-center justify-center gap-1 text-primary font-mono font-bold text-xs tabular-nums">
+                                  <Clock className="w-3.5 h-3.5 text-primary" />
+                                  <span>{tiempoMesa.cronometro}</span>
+                                </div>
+
+                                {/* Costo en vivo del tiempo */}
+                                <div className="text-xl font-extrabold font-mono text-primary tabular-nums">
+                                  {tiempoMesa.costoTiempo.toFixed(2)}{' '}
+                                  <span className="text-xs text-primary/80 font-normal">Bs.</span>
+                                </div>
+
+                                {/* Consumos cargados */}
+                                <div className="text-[11px] text-on-surface-variant flex items-center justify-center gap-1">
+                                  <UtensilsCrossed className="w-3 h-3 text-on-surface-variant/70" />
+                                  <span>
+                                    {cantidadConsumos === 0
+                                      ? 'Sin consumos'
+                                      : `${cantidadConsumos} ${cantidadConsumos === 1 ? 'consumo' : 'consumos'}`}
+                                  </span>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="space-y-1">
+                                {/* Cronómetro en vivo */}
+                                <div className="flex items-center justify-center gap-1 text-primary font-mono font-bold text-xs tabular-nums">
+                                  <Clock className="w-3.5 h-3.5 text-primary" />
+                                  <span>{tiempoMesa.cronometro}</span>
+                                </div>
+
+                                {/* Costo en vivo del tiempo */}
+                                <div className="text-xl font-bold font-mono text-on-surface tabular-nums">
+                                  {tiempoMesa.costoTiempo.toFixed(2)}{' '}
+                                  <span className="text-xs text-on-surface-variant font-normal">
+                                    Bs.
+                                  </span>
+                                </div>
+
+                                {/* Consumos cargados */}
+                                <div className="text-[11px] text-on-surface-variant flex items-center justify-center gap-1">
+                                  <UtensilsCrossed className="w-3 h-3 text-on-surface-variant/70" />
+                                  <span>
+                                    {cantidadConsumos === 0
+                                      ? 'Sin consumos'
+                                      : `${cantidadConsumos} ${cantidadConsumos === 1 ? 'consumo' : 'consumos'}`}
+                                  </span>
+                                </div>
+                              </div>
+                            )
                           ) : (
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-surface-container text-on-surface-variant border border-surface-variant/30">
-                              DISPONIBLE
-                            </span>
+                            <div className="space-y-1 py-1">
+                              <div className="w-7 h-7 mx-auto rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant/50">
+                                <Clock className="w-4 h-4" />
+                              </div>
+                              <span className="text-xs font-semibold text-on-surface-variant block">
+                                SIN SESIÓN
+                              </span>
+                            </div>
                           )}
                         </div>
-                      </div>
 
-                      {/* Cuerpo central de la mesa */}
-                      <div className="my-3 py-2 flex flex-col items-center justify-center text-center">
-                        {estaOcupada && tiempoMesa ? (
-                          <div className="space-y-1">
-                            {/* Cronómetro en vivo */}
-                            <div className="flex items-center justify-center gap-1 text-on-surface font-mono font-bold text-xs tabular-nums">
-                              <Clock className="w-3.5 h-3.5 text-primary" />
-                              <span>{tiempoMesa.cronometro}</span>
-                            </div>
-
-                            {/* Costo en vivo del tiempo */}
-                            <div className="text-xl font-bold font-mono text-primary tabular-nums">
-                              {tiempoMesa.costoTiempo.toFixed(2)}{' '}
-                              <span className="text-xs text-on-surface-variant font-normal">
-                                Bs.
-                              </span>
-                            </div>
-
-                            {/* Consumos cargados */}
-                            <div className="text-[11px] text-on-surface-variant flex items-center justify-center gap-1">
-                              <UtensilsCrossed className="w-3 h-3 text-on-surface-variant/70" />
-                              <span>
-                                {cantidadConsumos === 0
-                                  ? 'Sin consumos'
-                                  : `${cantidadConsumos} ${cantidadConsumos === 1 ? 'consumo' : 'consumos'}`}
-                              </span>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="space-y-1 py-1">
-                            <div className="w-7 h-7 mx-auto rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant/50">
-                              <Clock className="w-4 h-4" />
-                            </div>
-                            <span className="text-xs font-semibold text-on-surface-variant block">
-                              SIN SESIÓN
-                            </span>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Botón inferior de acción */}
-                      <div className="mt-2 pt-2 border-t border-surface-variant/20">
-                        {estaOcupada ? (
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              seleccionarMesa(mesa.id_mesa)
-                            }}
-                            className={`w-full py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1 ${esSeleccionada
-                              ? 'bg-primary text-on-primary shadow-sm shadow-primary/20'
-                              : 'bg-surface-container hover:bg-surface-container-high text-on-surface border border-surface-variant/40'
+                        {/* Botón inferior de acción */}
+                        <div className="relative z-10 mt-2 pt-2 border-t border-surface-variant/20">
+                          {estaOcupada ? (
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                seleccionarMesa(mesa.id_mesa)
+                              }}
+                              className={`w-full py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1 ${
+                                esSeleccionada
+                                  ? 'bg-primary text-on-primary shadow-sm shadow-primary/20'
+                                  : 'bg-surface-container-high hover:bg-surface-variant text-on-surface border border-surface-variant/40'
                               }`}
-                          >
-                            <span>{esSeleccionada ? 'En Panel →' : 'Detalle'}</span>
-                          </button>
-                        ) : (
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              handleIniciarMesa(mesa.id_mesa, mesa.nombre)
-                            }}
-                            className="w-full py-1.5 rounded-lg text-xs font-bold bg-surface-container-high hover:bg-primary hover:text-on-primary text-on-surface border border-surface-variant/40 transition-all cursor-pointer text-center"
-                          >
-                            Iniciar Tiempo
-                          </button>
-                        )}
+                            >
+                              <span>{esSeleccionada ? 'En Panel →' : 'Detalle'}</span>
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                handleIniciarMesa(mesa.id_mesa, mesa.nombre)
+                              }}
+                              className="w-full py-1.5 rounded-lg text-xs font-bold bg-surface-container hover:bg-primary hover:text-on-primary text-on-surface border border-surface-variant/40 transition-all cursor-pointer text-center"
+                            >
+                              Iniciar Tiempo
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   )
@@ -333,8 +405,8 @@ export default function ControlMesas() {
         {/* ============================================================== */}
         <div className="col-span-3 bg-surface-container-low/95 border border-surface-variant/30 rounded-xl p-3.5 flex flex-col justify-between overflow-hidden shadow-xl h-full min-h-0">
           {!mesaSeleccionada ||
-            mesaSeleccionada.estado !== 'OCUPADA' ||
-            !mesaSeleccionada.sesion ? (
+          mesaSeleccionada.estado !== 'OCUPADA' ||
+          !mesaSeleccionada.sesion ? (
             /* Estado vacío cuando no hay mesa ocupada seleccionada */
             <div className="flex flex-col items-center justify-center h-full text-center p-6 space-y-3">
               <div className="w-12 h-12 rounded-2xl bg-surface-container border border-surface-variant/30 flex items-center justify-center text-on-surface-variant/60 shadow-inner">
@@ -430,7 +502,7 @@ export default function ControlMesas() {
                   {/* Lista con scroll interno */}
                   <div className="flex-1 overflow-y-auto space-y-1.5 pr-1 min-h-22.5 max-h-40">
                     {!mesaSeleccionada.sesion.consumos ||
-                      mesaSeleccionada.sesion.consumos.length === 0 ? (
+                    mesaSeleccionada.sesion.consumos.length === 0 ? (
                       <div className="flex items-center justify-center h-full text-center text-on-surface-variant/60 text-xs py-4">
                         Sin consumos cargados todavía.
                       </div>
@@ -523,10 +595,11 @@ export default function ControlMesas() {
                   <button
                     type="button"
                     onClick={() => setMetodoPago('EFECTIVO')}
-                    className={`py-1.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${metodoPago === 'EFECTIVO'
-                      ? 'bg-primary text-on-primary shadow-sm shadow-primary/20'
-                      : 'bg-surface-container border border-surface-variant/40 text-on-surface-variant hover:text-on-surface'
-                      }`}
+                    className={`py-1.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                      metodoPago === 'EFECTIVO'
+                        ? 'bg-primary text-on-primary shadow-sm shadow-primary/20'
+                        : 'bg-surface-container border border-surface-variant/40 text-on-surface-variant hover:text-on-surface'
+                    }`}
                   >
                     <Banknote className="w-3.5 h-3.5" />
                     <span>Efectivo</span>
@@ -535,10 +608,11 @@ export default function ControlMesas() {
                   <button
                     type="button"
                     onClick={() => setMetodoPago('QR')}
-                    className={`py-1.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${metodoPago === 'QR'
-                      ? 'bg-primary text-on-primary shadow-sm shadow-primary/20'
-                      : 'bg-surface-container border border-surface-variant/40 text-on-surface-variant hover:text-on-surface'
-                      }`}
+                    className={`py-1.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                      metodoPago === 'QR'
+                        ? 'bg-primary text-on-primary shadow-sm shadow-primary/20'
+                        : 'bg-surface-container border border-surface-variant/40 text-on-surface-variant hover:text-on-surface'
+                    }`}
                   >
                     <QrCode className="w-3.5 h-3.5" />
                     <span>QR Simple</span>
